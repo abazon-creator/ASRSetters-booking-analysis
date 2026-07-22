@@ -199,11 +199,40 @@ footer code{font-family:var(--mono);font-size:11px;background:var(--surface-2);p
 @media (prefers-reduced-motion:no-preference){
   .bar-achieved,.bar-gap{transition:width .35s cubic-bezier(.4,0,.2,1),left .35s cubic-bezier(.4,0,.2,1)}
 }
+/* ---- site navigation ------------------------------------------------ */
+.sitenav{position:sticky;top:0;z-index:50;background:var(--surface);
+  border-bottom:1px solid var(--line);margin:-26px -22px 0;padding:0 22px;
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 26px;
+  backdrop-filter:saturate(1.4) blur(6px)}
+.sitenav-brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  font-weight:500;padding:13px 0;white-space:nowrap}
+.sitenav-brand .brandmark{width:11px;height:11px}
+.sitenav-links{display:flex;flex-wrap:wrap;gap:2px;margin-left:auto}
+.sitenav-links a{text-decoration:none;color:var(--muted);font-size:13px;padding:13px 13px;
+  border-bottom:2px solid transparent;white-space:nowrap}
+.sitenav-links a:hover{color:var(--ink)}
+.sitenav-links a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--orange);font-weight:500}
+.sitenav-links a:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+@media(max-width:640px){
+  .sitenav{gap:0}
+  .sitenav-links{margin-left:0;width:100%;border-top:1px solid var(--line);overflow-x:auto}
+  .sitenav-links a{padding:11px 12px}
+}
 </style>
 
 <div class="wrap">
 
-  <header class="mast">
+  <nav class="sitenav">
+  <a class="sitenav-brand" href="index.html"><span class="brandmark"></span>Performance Golf &middot; ASR Analysis</a>
+  <div class="sitenav-links">
+    <a href="index.html">Overview</a>
+    <a href="asr-booking-rate-dashboard.html" aria-current="page">Dashboard</a>
+    <a href="asr-call-coaching-pack.html">Coaching</a>
+    <a href="asr-objection-rebuttal-playbook.html">Rebuttals</a>
+  </div>
+</nav>
+<header class="mast">
     <div>
       <div class="brandline">
         <span class="brandmark"></span>

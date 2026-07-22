@@ -1,0 +1,276 @@
+<title>ASR Booking Rate Analysis — Overview</title>
+<style>
+:root{
+  --orange:#FD3300; --orange-dk:#DB2C00;
+  --black:#1D1A1A; --gray:#7B726C; --stone:#B3AAA3;
+  --pebble:#DFD9D5; --sand:#ECE9E4; --fog:#F4F2F0; --mist:#FCFAFA;
+  --ground:var(--fog); --surface:var(--mist); --surface-2:var(--sand);
+  --ink:var(--black); --ink-2:#453F3D; --muted:var(--gray);
+  --line:var(--pebble); --line-2:var(--stone);
+  --orange-soft:rgba(253,51,0,.09); --rule:var(--black);
+  --shadow:0 1px 2px rgba(29,26,26,.05), 0 3px 12px rgba(29,26,26,.05);
+  --sans:"Repro","Repro Regular","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+  --serif:"GT Super Text","GT Super Display","GT Super",Georgia,"Times New Roman",serif;
+  --mono:"Repro Mono","Repro Monospaced",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --ground:#141111; --surface:#1D1A1A; --surface-2:#262221;
+  --ink:var(--mist); --ink-2:var(--pebble); --muted:var(--stone);
+  --line:#332E2D; --line-2:#453F3D; --orange-soft:rgba(253,51,0,.15); --rule:var(--mist);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 3px 12px rgba(0,0,0,.3);}}
+:root[data-theme="dark"]{
+  --ground:#141111; --surface:#1D1A1A; --surface-2:#262221;
+  --ink:var(--mist); --ink-2:var(--pebble); --muted:var(--stone);
+  --line:#332E2D; --line-2:#453F3D; --orange-soft:rgba(253,51,0,.15); --rule:var(--mist);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 3px 12px rgba(0,0,0,.3);}
+:root[data-theme="light"]{
+  --ground:var(--fog); --surface:var(--mist); --surface-2:var(--sand);
+  --ink:var(--black); --ink-2:#453F3D; --muted:var(--gray);
+  --line:var(--pebble); --line-2:var(--stone); --orange-soft:rgba(253,51,0,.09); --rule:var(--black);
+  --shadow:0 1px 2px rgba(29,26,26,.05), 0 3px 12px rgba(29,26,26,.05);}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1060px;margin:0 auto;padding:26px 22px 70px;display:flex;flex-direction:column;gap:26px}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:500;margin:0;text-wrap:balance}
+.mono{font-family:var(--mono)}
+.brandmark{width:13px;height:13px;background:var(--orange);border-radius:50%;flex:none}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-2);font-weight:500}
+
+/* hero */
+.hero{border-bottom:3px solid var(--orange);padding-bottom:22px}
+.hero .brandline{display:flex;align-items:center;gap:9px;margin-bottom:11px}
+.hero h1{font-size:38px;line-height:1.08;letter-spacing:-.015em;max-width:20ch}
+.hero .sub{margin:14px 0 0;font-size:16px;color:var(--ink-2);max-width:64ch}
+.hero .win{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);
+  text-transform:uppercase;margin-top:14px}
+
+/* numbers */
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line)}
+.num{background:var(--surface);padding:15px 16px}
+.num .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:3px}
+.num .v{font-size:26px;font-weight:600;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+.num .n{font-size:11.5px;color:var(--muted)}
+
+/* headline finding */
+.finding{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--orange);
+  box-shadow:var(--shadow);padding:22px 26px;display:grid;grid-template-columns:auto 1fr;gap:28px;
+  align-items:center}
+.finding .big{font-size:58px;line-height:.92;font-weight:600;letter-spacing:-.04em;color:var(--orange);
+  font-variant-numeric:tabular-nums}
+.finding .lede{font-family:var(--serif);font-size:20px;line-height:1.35;margin:0 0 8px}
+.finding p{margin:0;max-width:62ch;color:var(--ink-2)}
+@media(max-width:700px){.finding{grid-template-columns:1fr}.hero h1{font-size:30px}}
+
+/* report cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);
+  box-shadow:var(--shadow);text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
+.card:hover{border-color:var(--orange);transform:translateY(-2px)}
+.card:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+.card-top{padding:16px 18px 0}
+.card .n{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--orange);display:block;
+  margin-bottom:8px}
+.card h3{font-size:19px;margin-bottom:8px}
+.card p{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.card ul{margin:12px 0 0;padding-left:17px;font-size:12.5px;color:var(--muted);line-height:1.7}
+.card .go{margin-top:auto;padding:14px 18px;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--orange);font-weight:500}
+
+/* findings list */
+.panel{background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)}
+.panel-head{padding:16px 18px 14px;border-bottom:1px solid var(--line)}
+.panel-head h2{font-size:20px}
+.panel-head p{margin:5px 0 0;font-size:12.5px;color:var(--muted);max-width:72ch}
+.panel-body{padding:0}
+.item{padding:16px 18px;border-bottom:1px solid var(--line);display:grid;
+  grid-template-columns:88px 1fr;gap:20px;align-items:start}
+.item:last-child{border-bottom:0}
+.item .fig{font-family:var(--mono);font-size:19px;font-weight:600;color:var(--orange);
+  font-variant-numeric:tabular-nums;text-align:right;padding-top:1px}
+.item h4{font-size:16px;margin-bottom:4px}
+.item p{margin:0;font-size:13.5px;color:var(--ink-2);max-width:70ch}
+@media(max-width:600px){.item{grid-template-columns:1fr;gap:6px}.item .fig{text-align:left}}
+
+footer{font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--line);padding-top:16px}
+footer b{color:var(--ink-2);font-weight:500}
+footer code{font-family:var(--mono);font-size:11px;background:var(--surface-2);padding:1px 5px}
+
+/* ---- site navigation ------------------------------------------------ */
+.sitenav{position:sticky;top:0;z-index:50;background:var(--surface);
+  border-bottom:1px solid var(--line);margin:-26px -22px 0;padding:0 22px;
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 26px;
+  backdrop-filter:saturate(1.4) blur(6px)}
+.sitenav-brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  font-weight:500;padding:13px 0;white-space:nowrap}
+.sitenav-brand .brandmark{width:11px;height:11px}
+.sitenav-links{display:flex;flex-wrap:wrap;gap:2px;margin-left:auto}
+.sitenav-links a{text-decoration:none;color:var(--muted);font-size:13px;padding:13px 13px;
+  border-bottom:2px solid transparent;white-space:nowrap}
+.sitenav-links a:hover{color:var(--ink)}
+.sitenav-links a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--orange);font-weight:500}
+.sitenav-links a:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+@media(max-width:640px){
+  .sitenav{gap:0}
+  .sitenav-links{margin-left:0;width:100%;border-top:1px solid var(--line);overflow-x:auto}
+  .sitenav-links a{padding:11px 12px}
+}
+</style>
+
+<div class="wrap">
+<nav class="sitenav">
+  <a class="sitenav-brand" href="index.html"><span class="brandmark"></span>Performance Golf &middot; ASR Analysis</a>
+  <div class="sitenav-links">
+    <a href="index.html" aria-current="page">Overview</a>
+    <a href="asr-booking-rate-dashboard.html">Dashboard</a>
+    <a href="asr-call-coaching-pack.html">Coaching</a>
+    <a href="asr-objection-rebuttal-playbook.html">Rebuttals</a>
+  </div>
+</nav>
+
+  <header class="hero">
+    <div class="brandline"><span class="brandmark"></span>
+      <span class="eyebrow">Performance Golf &middot; ASR Phone Team</span></div>
+    <h1>Why the phone team isn't hitting 40%</h1>
+    <p class="sub">An analysis of every recorded call over eight days — what the booking
+    rate really is, where it's being lost, and the one behaviour that separates the reps
+    who hit target from the ones who don't.</p>
+    <p class="win">14–21 July 2026 &middot; 14,851 calls &middot; 2,299 transcripts read</p>
+  </header>
+
+  <section class="nums">
+    <div class="num"><span class="k">Dials</span><div class="v">14,851</div><div class="n">all call attempts</div></div>
+    <div class="num"><span class="k">Connected</span><div class="v">2,301</div><div class="n">90 seconds or longer</div></div>
+    <div class="num"><span class="k">Appointments</span><div class="v">690</div><div class="n">distinct members</div></div>
+    <div class="num"><span class="k">Booking rate</span><div class="v" style="color:var(--orange)">29.7%</div><div class="n">against a 40% target</div></div>
+    <div class="num"><span class="k">Agents</span><div class="v">54</div><div class="n">4 at or above target</div></div>
+  </section>
+
+  <section class="finding">
+    <div class="big">15.6&times;</div>
+    <div>
+      <p class="lede">One behaviour predicts the booking better than everything else combined.</p>
+      <p>Naming a specific day and clock time — "Monday at 3 o'clock", "11:20 or 11:40" —
+      appears in <b>48% of booked calls and 3% of declined ones.</b> Nothing else comes close.
+      Empathy and value explanation appear <i>slightly more often in the calls we lose.</i>
+      The close is already written into the script; it simply isn't being used.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="cards">
+      <a class="card" href="asr-booking-rate-dashboard.html">
+        <div class="card-top">
+          <span class="n">Report 01</span>
+          <h3>Booking Rate Dashboard</h3>
+          <p>The numbers, at company, team and agent level — and what the reported figure
+          gets wrong.</p>
+          <ul>
+            <li>Daily, weekly and monthly views</li>
+            <li>Inbound vs outbound split</li>
+            <li>Every agent ranked, thin samples flagged</li>
+          </ul>
+        </div>
+        <span class="go">Open the dashboard →</span>
+      </a>
+
+      <a class="card" href="asr-call-coaching-pack.html">
+        <div class="card-top">
+          <span class="n">Report 02</span>
+          <h3>Call Coaching Pack</h3>
+          <p>What separates a booked call from a declined one, measured across 1,347
+          transcripts — and who needs the conversation.</p>
+          <ul>
+            <li>12 agents flagged, with their own calls</li>
+            <li>8 model performers to copy</li>
+            <li>Each call linked for the team lead</li>
+          </ul>
+        </div>
+        <span class="go">Open the coaching pack →</span>
+      </a>
+
+      <a class="card" href="asr-objection-rebuttal-playbook.html">
+        <div class="card-top">
+          <span class="n">Report 03</span>
+          <h3>Objection &amp; Rebuttal Playbook</h3>
+          <p>What members actually say when we ask — taken from their words, not the
+          disposition the rep picked afterwards.</p>
+          <ul>
+            <li>The 12 objections ranked by volume</li>
+            <li>A tested rebuttal for each</li>
+            <li>A proof call where a rep won it</li>
+          </ul>
+        </div>
+        <span class="go">Open the playbook →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>What the analysis found</h2>
+      <p>Four things that change what to do next. Each is worked through in the reports above.</p>
+    </div>
+    <div class="panel-body">
+      <div class="item">
+        <div class="fig">29.7%</div>
+        <div>
+          <h4>The reported booking rate is wrong</h4>
+          <p>The Closer Report shows 43.56% for July. Measured consistently over the same
+          window it is 29.7%. The <code>90 sec Calls</code> denominator stops updating while
+          sets keep accruing — which is also what produces weekly rates above 100%. Worth
+          fixing at source before anyone makes decisions on that number.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="fig">0 of 27</div>
+        <div>
+          <h4>Inbound and outbound are different businesses</h4>
+          <p>Outbound connects on 4.9% of dials but books 36.4% of those. Inbound connects on
+          58.6% and books 25.3%. Teams are organised by channel, so the team league table is
+          largely a channel ranking. No inbound agent reaches 40% — a single blended target
+          manufactures failure for three quarters of the floor.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="fig">43%</div>
+        <div>
+          <h4>"Not interested" isn't what it sounds like</h4>
+          <p>It is 43% of every objection and we lose 92% of them. But members keep saying
+          <i>"all I wanted was the golf clubs"</i>, <i>"I don't want any instruction"</i>,
+          <i>"I don't want any videos"</i>. They are refusing a sales pitch we never made.
+          The rebuttal has to kill that belief before anything else.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="fig">6.1/10</div>
+        <div>
+          <h4>The QA score doesn't predict booking</h4>
+          <p>Calls carry an automated rubric score. The four agents hitting target average
+          6.1; several scoring above 7.0 book under 25%. The rubric measures customer-care
+          quality, which is a different job from setting. It should not be used to rank setters.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p style="margin:0 0 8px"><b>Method.</b> Appointments are counted as distinct member email
+    addresses per agent per day from the Closer Report, rather than counting form rows —
+    roughly 5% of rows are repeat bookings of an address already booked that month. Connected
+    calls are those with talk time of 90 seconds or more. Transcripts were split into rep and
+    member turns; objections come from the member's own wording, and a call counts as
+    "asked again" only when the rep requested a booking after the member's last objection.</p>
+    <p style="margin:0"><b>Limits.</b> 13 July is missing from the call export — it was the
+    busiest day of the period and the file exceeded the download limit. Two teams show
+    appointments but no call records, so no rate is computed for them. Weekly and monthly
+    views are partial, since the call window is eight days. Agents with fewer than 30
+    connected calls are dimmed in the agent table: at that sample the confidence band is
+    wide enough to mislead.</p>
+  </footer>
+</div>

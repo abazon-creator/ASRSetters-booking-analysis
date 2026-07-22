@@ -1,0 +1,685 @@
+<title>ASR Booking Rate — Enterprise, Team &amp; Agent</title>
+<style>
+/* ============================================================
+   Performance Golf brand tokens
+   Repro (primary sans) · GT Super Text (secondary serif) · Repro Mono
+   FD3300 Performance Orange · DB2C00 Dark Orange · 1D1A1A Black
+   7B726C UI Gray · B3AAA3 Stone · DFD9D5 Pebble · ECE9E4 Sand
+   F4F2F0 Fog · FCFAFA Mist
+   ============================================================ */
+:root{
+  --orange:#FD3300; --orange-dk:#DB2C00;
+  --black:#1D1A1A; --gray:#7B726C; --stone:#B3AAA3;
+  --pebble:#DFD9D5; --sand:#ECE9E4; --fog:#F4F2F0; --mist:#FCFAFA;
+
+  --ground:var(--fog); --surface:var(--mist); --surface-2:var(--sand);
+  --ink:var(--black); --ink-2:#453F3D; --muted:var(--gray);
+  --line:var(--pebble); --line-2:var(--stone);
+  --achieved:var(--black);            /* bar: what was booked   */
+  --gapfill:rgba(253,51,0,.22);       /* bar: shortfall to 40%  */
+  --orange-soft:rgba(253,51,0,.10);
+  --rule:var(--black);
+  --shadow:0 1px 2px rgba(29,26,26,.05), 0 3px 12px rgba(29,26,26,.05);
+
+  --sans:"Repro","Repro Regular","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+  --serif:"GT Super Text","GT Super Display","GT Super",Georgia,"Times New Roman",serif;
+  --mono:"Repro Mono","Repro Monospaced",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --ground:#141111; --surface:#1D1A1A; --surface-2:#262221;
+    --ink:var(--mist); --ink-2:var(--pebble); --muted:var(--stone);
+    --line:#332E2D; --line-2:#453F3D;
+    --achieved:var(--pebble);
+    --gapfill:rgba(253,51,0,.32);
+    --orange-soft:rgba(253,51,0,.16);
+    --rule:var(--mist);
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 3px 12px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#141111; --surface:#1D1A1A; --surface-2:#262221;
+  --ink:var(--mist); --ink-2:var(--pebble); --muted:var(--stone);
+  --line:#332E2D; --line-2:#453F3D;
+  --achieved:var(--pebble);
+  --gapfill:rgba(253,51,0,.32);
+  --orange-soft:rgba(253,51,0,.16);
+  --rule:var(--mist);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 3px 12px rgba(0,0,0,.3);
+}
+:root[data-theme="light"]{
+  --ground:var(--fog); --surface:var(--mist); --surface-2:var(--sand);
+  --ink:var(--black); --ink-2:#453F3D; --muted:var(--gray);
+  --line:var(--pebble); --line-2:var(--stone);
+  --achieved:var(--black);
+  --gapfill:rgba(253,51,0,.22);
+  --orange-soft:rgba(253,51,0,.10);
+  --rule:var(--black);
+  --shadow:0 1px 2px rgba(29,26,26,.05), 0 3px 12px rgba(29,26,26,.05);
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:26px 22px 70px;
+  display:flex;flex-direction:column;gap:24px}
+h1,h2,h3{font-family:var(--serif);font-weight:500;margin:0;text-wrap:balance;letter-spacing:-.005em}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--mono)}
+
+/* ---------- masthead ---------- */
+.mast{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-end;justify-content:space-between;
+  border-bottom:3px solid var(--orange);padding-bottom:15px}
+.mast h1{font-size:28px;line-height:1.12}
+.brandline{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.brandmark{width:13px;height:13px;background:var(--orange);border-radius:50%;flex:none}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-2);font-weight:500}
+.mast-meta{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.85;
+  letter-spacing:.02em}
+.mast-meta b{color:var(--ink-2);font-weight:500}
+
+/* ---------- headline ---------- */
+.headline{background:var(--surface);border:1px solid var(--line);
+  box-shadow:var(--shadow);padding:24px 26px;
+  display:grid;grid-template-columns:minmax(230px,auto) 1fr;gap:34px;align-items:center}
+.big-wrap{display:flex;flex-direction:column;gap:2px}
+.big{font-size:70px;line-height:.92;font-weight:600;letter-spacing:-.04em;
+  font-variant-numeric:tabular-nums}
+.big-sub{font-size:12.5px;color:var(--muted);margin-top:5px}
+.gap-chip{display:inline-flex;align-self:flex-start;margin-top:11px;padding:5px 11px;
+  font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.02em}
+.gauge{position:relative;display:flex;flex-direction:column;gap:9px;min-width:0;padding-top:18px}
+.gauge-track{position:relative;height:36px;background:var(--surface-2);
+  border:1px solid var(--line);overflow:hidden}
+.bar-achieved{position:absolute;left:0;top:0;bottom:0;background:var(--achieved)}
+.bar-gap{position:absolute;top:0;bottom:0;background:var(--gapfill)}
+.gauge-target{position:absolute;top:13px;height:46px;width:2px;background:var(--rule);z-index:2}
+.gauge-target::after{content:"TARGET 40%";position:absolute;left:6px;top:-14px;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--ink);white-space:nowrap}
+.gauge-scale{display:flex;justify-content:space-between;font-family:var(--mono);
+  font-size:9.5px;color:var(--muted);letter-spacing:.06em}
+
+/* ---------- kpis ---------- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line)}
+.kpi{background:var(--surface);padding:15px 16px;display:flex;flex-direction:column;gap:2px}
+.kpi-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.kpi-val{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.025em}
+.kpi-note{font-size:11.5px;color:var(--muted)}
+
+/* ---------- controls ---------- */
+.controls{display:flex;flex-wrap:wrap;gap:20px;align-items:center;
+  background:var(--surface);border:1px solid var(--line);padding:13px 16px}
+.cgroup{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.clabel{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.seg{display:flex;border:1px solid var(--line-2)}
+.seg button{font:inherit;font-size:12.5px;padding:5px 14px;border:0;background:transparent;
+  color:var(--ink-2);cursor:pointer;border-right:1px solid var(--line-2)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--orange);color:var(--mist);font-weight:500}
+.chip{font:inherit;font-size:12.5px;padding:5px 12px;border:1px solid var(--line-2);
+  background:transparent;color:var(--ink-2);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink);font-weight:500}
+input[type=range]{accent-color:var(--orange);width:118px}
+button:focus-visible,input:focus-visible,th:focus-visible,[role=button]:focus-visible{
+  outline:2px solid var(--orange);outline-offset:2px}
+
+/* ---------- panels ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden}
+.panel-head{padding:15px 18px 13px;border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap}
+.panel-head h2{font-size:18px}
+.panel-head p{margin:4px 0 0;font-size:12.5px;color:var(--muted);max-width:64ch}
+.panel-body{padding:18px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:780px){.two{grid-template-columns:1fr}.headline{grid-template-columns:1fr}}
+
+.segcard{border:1px solid var(--line);padding:16px 17px;display:flex;flex-direction:column;gap:10px;
+  background:var(--surface-2)}
+.segcard h3{font-size:15px;display:flex;align-items:center;gap:9px}
+.segcard .rate{font-size:40px;font-weight:600;letter-spacing:-.035em;
+  font-variant-numeric:tabular-nums;line-height:1}
+.segrow{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--muted);
+  border-top:1px solid var(--line);padding-top:6px}
+.segrow span{min-width:0}
+.segrow b{white-space:nowrap}
+.segrow b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;padding:2px 8px;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.1em;font-weight:500;text-transform:uppercase}
+
+/* ---------- teams ---------- */
+.teams{display:flex;flex-direction:column}
+.team{display:grid;grid-template-columns:minmax(120px,1.05fr) 62px 1fr minmax(94px,auto);
+  gap:16px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.team:last-child{border-bottom:0}
+.team:hover{background:var(--surface-2)}
+.team[aria-selected="true"]{background:var(--orange-soft);box-shadow:inset 3px 0 0 var(--orange)}
+.team-name{font-weight:500;font-size:14.5px;display:flex;flex-direction:column;gap:2px}
+.team-name span{font-weight:400;font-size:10.5px;color:var(--muted);font-family:var(--mono);letter-spacing:.05em}
+.bar-track{position:relative;height:20px;background:var(--surface-2);border:1px solid var(--line)}
+.bar-target{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--rule);opacity:.8}
+.team-rate{font-size:20px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.team-delta{font-family:var(--mono);font-size:10.5px;text-align:right;color:var(--muted);letter-spacing:.03em}
+
+/* ---------- table ---------- */
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);text-align:right;padding:10px;border-bottom:1px solid var(--line-2);
+  white-space:nowrap;cursor:pointer;user-select:none;background:var(--surface);position:sticky;top:0;z-index:1}
+th:first-child,td:first-child{text-align:left}
+th:hover{color:var(--ink)}
+th[data-dir]{color:var(--orange)}
+th[data-dir]::after{content:" ▾";font-size:8px}
+th[data-dir="asc"]::after{content:" ▴"}
+td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;
+  font-variant-numeric:tabular-nums;vertical-align:middle}
+tbody tr:hover td{background:var(--surface-2)}
+.agent-cell{display:flex;flex-direction:column;gap:1px;min-width:180px}
+.agent-cell b{font-weight:500;font-size:13.5px}
+.agent-cell span{font-size:10px;color:var(--muted);font-family:var(--mono);letter-spacing:.06em;
+  text-transform:uppercase}
+.rate-cell{display:flex;align-items:center;gap:10px;justify-content:flex-end}
+.rate-num{font-weight:600;font-size:14px;min-width:52px;text-align:right}
+.mini{position:relative;width:100px;height:15px;background:var(--surface-2);
+  border:1px solid var(--line);flex:none}
+.mini u{position:absolute;top:-2px;bottom:-2px;width:1.5px;background:var(--rule);opacity:.75}
+.spark{display:block}
+.thin td{opacity:.6}
+.empty{padding:26px;text-align:center;color:var(--muted);font-size:13px}
+
+.trend-legend{display:flex;gap:20px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:10px}
+.trend-legend i{display:inline-block;width:11px;height:11px;margin-right:6px;vertical-align:-1px}
+
+footer{font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--line);padding-top:16px}
+footer b{color:var(--ink-2);font-weight:500}
+footer code{font-family:var(--mono);font-size:11px;background:var(--surface-2);padding:1px 5px}
+@media (prefers-reduced-motion:no-preference){
+  .bar-achieved,.bar-gap{transition:width .35s cubic-bezier(.4,0,.2,1),left .35s cubic-bezier(.4,0,.2,1)}
+}
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <div>
+      <div class="brandline">
+        <span class="brandmark"></span>
+        <span class="eyebrow">Performance Golf · ASR Phone Team</span>
+      </div>
+      <h1>Booking Rate — Enterprise, Team &amp; Agent</h1>
+    </div>
+    <div class="mast-meta">
+      <div><b id="m-window"></b> · 8 DAYS</div>
+      <div>SETS ÷ CONNECTED CALLS (TALK ≥ 90S)</div>
+      <div>SETS BY <b>DISTINCT EMAIL</b></div>
+    </div>
+  </header>
+
+  <section class="headline">
+    <div class="big-wrap">
+      <div class="eyebrow" id="scope-label">Enterprise</div>
+      <div class="big num" id="hero-rate">—</div>
+      <div class="big-sub" id="hero-detail"></div>
+      <div class="gap-chip" id="hero-gap"></div>
+    </div>
+    <div class="gauge">
+      <div class="gauge-target" style="left:40%"></div>
+      <div class="gauge-track">
+        <div class="bar-achieved" id="gauge-fill"></div>
+        <div class="bar-gap" id="gauge-gap"></div>
+      </div>
+      <div class="gauge-scale"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
+    </div>
+  </section>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="controls">
+    <div class="cgroup">
+      <span class="clabel">Channel</span>
+      <div class="seg" id="seg-channel">
+        <button data-v="all" aria-pressed="true">All</button>
+        <button data-v="Inbound" aria-pressed="false">Inbound</button>
+        <button data-v="Outbound" aria-pressed="false">Outbound</button>
+      </div>
+    </div>
+    <div class="cgroup">
+      <span class="clabel">Team</span>
+      <div id="team-chips" class="cgroup"></div>
+    </div>
+    <div class="cgroup">
+      <span class="clabel">View</span>
+      <div class="seg" id="seg-period">
+        <button data-v="day" aria-pressed="true">Daily</button>
+        <button data-v="week" aria-pressed="false">Weekly</button>
+        <button data-v="month" aria-pressed="false">Monthly</button>
+      </div>
+    </div>
+    <div class="cgroup">
+      <span class="clabel">Min connected</span>
+      <input type="range" id="minconn" min="0" max="60" step="5" value="30">
+      <span class="mono num" id="minconn-val" style="font-size:12px">30</span>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Inbound vs outbound</h2>
+          <p>The two channels behave nothing alike. Outbound rarely connects but converts well; inbound almost always connects and converts poorly.</p>
+        </div>
+      </div>
+      <div class="panel-body two" id="segcards" style="gap:14px"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h2 id="trend-title">Daily booking rate</h2>
+          <p id="trend-sub">Sets ÷ connected calls per day, against the 40% target.</p>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div id="trend"></div>
+        <div class="trend-legend">
+          <span><i style="background:var(--orange)"></i>Booking rate</span>
+          <span><i style="background:var(--rule);height:2px"></i>Target 40%</span>
+          <span><i style="background:var(--surface-2);border:1px solid var(--line-2)"></i>Connected calls</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Team level</h2>
+        <p>Solid bar is the rate achieved; the orange band is the shortfall to 40%. Click a team to filter the agent table.</p>
+      </div>
+    </div>
+    <div class="panel-body"><div class="teams" id="teams"></div></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Agent level</h2>
+        <p id="agent-sub"></p>
+      </div>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-k="name" tabindex="0">Agent</th>
+            <th data-k="calls" tabindex="0">Dials</th>
+            <th data-k="conn" tabindex="0">Connected</th>
+            <th data-k="connrate" tabindex="0">Conn&nbsp;%</th>
+            <th data-k="sets" tabindex="0">Sets</th>
+            <th data-k="rate" data-dir="asc" tabindex="0">Booking rate</th>
+            <th data-k="gap" tabindex="0">vs 40%</th>
+            <th data-k="trend">Daily</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="empty" id="empty" hidden>No agents match these filters.</div>
+  </section>
+
+  <footer>
+    <p style="margin:0 0 8px"><b>Reading the bars.</b> The solid bar is the booking rate achieved. The orange band is the shortfall to the 40% target — the wider the orange, the bigger the gap. Agents at or above target show no orange at all.</p>
+    <p style="margin:0 0 8px"><b>Sources.</b> Sets from the ASR Closer Report <code>Form Responses</code> tab, counted as distinct <code>Email address</code> per ASR per day. Connected calls from the Aloware call-transcript exports where <code>Talk Time ≥ 00:01:30</code>. Agents joined to teams through the roster workbook <code>schedule</code> tab on <code>Aloware Name</code> and <code>Call Tracker Name</code>; where an agent is absent from the schedule the set form's own <code>ASR Team</code> column is used — the two agree on all five agents present in both.</p>
+    <p style="margin:0 0 8px"><b>Coverage.</b> 14,851 calls and 690 sets across 54 agents, 14–21 July 2026. <b>13 July is missing</b> — that export exceeds the 10 MB connector download limit, and it was the heaviest day of the period. Team C and Support show sets but no calls: their agents do not appear in this call-log export, so no rate is computed for them.</p>
+    <p style="margin:0"><b>On the 43.56% in the Closer Report.</b> That figure divides a full month of sets by an incomplete <code>90 sec Calls</code> denominator — 21 and 22 July are recorded as zero while sets keep accruing, which is what produces weekly rates above 100%. Measured consistently over the same window, the enterprise rate is 30.0%.</p>
+  </footer>
+</div>
+
+<script>
+const DATA = {"window":{"from":"2026-07-14","to":"2026-07-21"},"target":40,"days":["2026-07-14","2026-07-15","2026-07-16","2026-07-17","2026-07-18","2026-07-19","2026-07-20","2026-07-21"],"agents":[{"key":"abet belano","name":"Agent 01","team":"Team D","role":"Assistant RA","lob":"Assistant RA","status":"Active","sets":8,"conn":50,"in":50,"out":0,"calls":72,"daily":[{"d":"2026-07-14","s":1,"c":10,"i":10,"o":0,"a":12},{"d":"2026-07-15","s":2,"c":13,"i":13,"o":0,"a":15},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":2,"c":10,"i":10,"o":0,"a":16},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":2,"c":12,"i":12,"o":0,"a":23},{"d":"2026-07-21","s":1,"c":5,"i":5,"o":0,"a":6}]},{"key":"alex edem","name":"Agent 02","team":"Team D","role":"Retention","lob":"Retention","status":"Active","sets":17,"conn":60,"in":60,"out":0,"calls":173,"daily":[{"d":"2026-07-14","s":4,"c":7,"i":7,"o":0,"a":16},{"d":"2026-07-15","s":2,"c":6,"i":6,"o":0,"a":19},{"d":"2026-07-16","s":3,"c":12,"i":12,"o":0,"a":18},{"d":"2026-07-17","s":3,"c":12,"i":12,"o":0,"a":22},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":4,"c":14,"i":14,"o":0,"a":19},{"d":"2026-07-21","s":1,"c":9,"i":9,"o":0,"a":79}]},{"key":"alvin alan comia","name":"Agent 03","team":"Team D","role":"Phone Support","lob":"PG1","status":"Active","sets":17,"conn":50,"in":50,"out":0,"calls":75,"daily":[{"d":"2026-07-14","s":1,"c":7,"i":7,"o":0,"a":9},{"d":"2026-07-15","s":3,"c":5,"i":5,"o":0,"a":6},{"d":"2026-07-16","s":3,"c":11,"i":11,"o":0,"a":13},{"d":"2026-07-17","s":4,"c":11,"i":11,"o":0,"a":12},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":5,"c":10,"i":10,"o":0,"a":16},{"d":"2026-07-21","s":1,"c":6,"i":6,"o":0,"a":19}]},{"key":"audrey banares","name":"Agent 04","team":"Team B","role":"Phone Support","lob":"PG1","status":"Active","sets":17,"conn":44,"in":44,"out":0,"calls":85,"daily":[{"d":"2026-07-14","s":3,"c":5,"i":5,"o":0,"a":7},{"d":"2026-07-15","s":2,"c":2,"i":2,"o":0,"a":5},{"d":"2026-07-16","s":3,"c":10,"i":10,"o":0,"a":14},{"d":"2026-07-17","s":2,"c":11,"i":11,"o":0,"a":16},{"d":"2026-07-18","s":5,"c":5,"i":5,"o":0,"a":10},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":2,"c":11,"i":11,"o":0,"a":33}]},{"key":"carlo palma","name":"Agent 05","team":"Team A","role":"Phone Support","lob":"Customer Care","status":"Active","sets":10,"conn":32,"in":0,"out":32,"calls":1104,"daily":[{"d":"2026-07-14","s":1,"c":6,"i":0,"o":6,"a":205},{"d":"2026-07-15","s":1,"c":2,"i":0,"o":2,"a":155},{"d":"2026-07-16","s":3,"c":6,"i":0,"o":6,"a":218},{"d":"2026-07-17","s":2,"c":8,"i":0,"o":8,"a":164},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":1,"c":3,"i":0,"o":3,"a":186},{"d":"2026-07-21","s":2,"c":7,"i":0,"o":7,"a":176}]},{"key":"carmelyn luna","name":"Agent 06","team":"Support","role":"Supervisor","lob":"Retention","status":"Active","sets":1,"conn":0,"in":0,"out":0,"calls":0,"daily":[{"d":"2026-07-14","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":1,"c":0,"i":0,"o":0,"a":0}]},{"key":"charlyn baylon","name":"Agent 07","team":"Team B","role":"Phone Support","lob":"VIP","status":"Active","sets":16,"conn":77,"in":77,"out":0,"calls":110,"daily":[{"d":"2026-07-14","s":3,"c":12,"i":12,"o":0,"a":13},{"d":"2026-07-15","s":2,"c":13,"i":13,"o":0,"a":13},{"d":"2026-07-16","s":2,"c":13,"i":13,"o":0,"a":13},{"d":"2026-07-17","s":3,"c":10,"i":10,"o":0,"a":11},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":2,"c":15,"i":15,"o":0,"a":15},{"d":"2026-07-21","s":4,"c":14,"i":14,"o":0,"a":45}]},{"key":"chelei bago","name":"Agent 08","team":"Team B","role":"Phone Support","lob":"PG1","status":"Active","sets":17,"conn":49,"in":49,"out":0,"calls":57,"daily":[{"d":"2026-07-14","s":1,"c":6,"i":6,"o":0,"a":6},{"d":"2026-07-15","s":0,"c":1,"i":1,"o":0,"a":1},{"d":"2026-07-16","s":5,"c":13,"i":13,"o":0,"a":18},{"d":"2026-07-17","s":5,"c":9,"i":9,"o":0,"a":10},{"d":"2026-07-18","s":1,"c":3,"i":3,"o":0,"a":4},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":5,"c":14,"i":14,"o":0,"a":15},{"d":"2026-07-21","s":0,"c":3,"i":3,"o":0,"a":3}]},{"key":"christian ortizano","name":"Agent 09","team":"Unassigned","role":"","lob":"","status":"Inactive","sets":0,"conn":3,"in":0,"out":3,"calls":45,"daily":[{"d":"2026-07-14","s":0,"c":3,"i":0,"o":3,"a":45},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":0,"c":0,"i":0,"o":0,"a":0}]},{"key":"dan emmanuel nicolas","name":"Agent 10","team":"Team C","role":"Phone Support","lob":"Internal Setter","status":"Active","sets":1,"conn":0,"in":0,"out":0,"calls":0,"daily":[{"d":"2026-07-14","s":1,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":0,"c":0,"i":0,"o":0,"a":0}]},{"key":"dexter bayhon","name":"Agent 11","team":"Team A","role":"Recruiter","lob":"Recruiter","status":"Active","sets":9,"conn":0,"in":0,"out":0,"calls":0,"daily":[{"d":"2026-07-14","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":5,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":1,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":3,"c":0,"i":0,"o":0,"a":0}]},{"key":"dexter cagas arbas","name":"Agent 12","team":"Team D","role":"Phone Support","lob":"VIP","status":"Active","sets":11,"conn":49,"in":49,"out":0,"calls":61,"daily":[{"d":"2026-07-14","s":4,"c":9,"i":9,"o":0,"a":12},{"d":"2026-07-15","s":1,"c":9,"i":9,"o":0,"a":10},{"d":"2026-07-16","s":4,"c":11,"i":11,"o":0,"a":16},{"d":"2026-07-17","s":0,"c":5,"i":5,"o":0,"a":6},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":2,"c":9,"i":9,"o":0,"a":10},{"d":"2026-07-21","s":0,"c":6,"i":6,"o":0,"a":7}]},{"key":"earl vincent leonardo","name":"Agent 13","team":"Team D","role":"Trainer - Golf","lob":"QA","status":"Active","sets":2,"conn":37,"in":37,"out":0,"calls":40,"daily":[{"d":"2026-07-14","s":0,"c":10,"i":10,"o":0,"a":11},{"d":"2026-07-15","s":0,"c":12,"i":12,"o":0,"a":13},{"d":"2026-07-16","s":0,"c":6,"i":6,"o":0,"a":6},{"d":"2026-07-17","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":1,"c":6,"i":6,"o":0,"a":7},{"d":"2026-07-21","s":1,"c":3,"i":3,"o":0,"a":3}]},{"key":"edelson libunao","name":"Agent 14","team":"Team C","role":"Phone Support","lob":"Internal Setter","status":"Active","sets":2,"conn":0,"in":0,"out":0,"calls":0,"daily":[{"d":"2026-07-14","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":2,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":0,"c":0,"i":0,"o":0,"a":0}]},{"key":"emmanuel sandoval","name":"Agent 15","team":"Team A","role":"Phone Support","lob":"PG1 Closer","status":"Active","sets":13,"conn":47,"in":0,"out":47,"calls":920,"daily":[{"d":"2026-07-14","s":2,"c":10,"i":0,"o":10,"a":170},{"d":"2026-07-15","s":2,"c":6,"i":0,"o":6,"a":131},{"d":"2026-07-16","s":3,"c":13,"i":0,"o":13,"a":174},{"d":"2026-07-17","s":2,"c":6,"i":0,"o":6,"a":162},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":2,"c":4,"i":0,"o":4,"a":105},{"d":"2026-07-21","s":2,"c":8,"i":0,"o":8,"a":178}]},{"key":"emmanuella frago","name":"Agent 16","team":"Team A","role":"Phone Support","lob":"Customer Care","status":"Active","sets":17,"conn":36,"in":0,"out":36,"calls":1956,"daily":[{"d":"2026-07-14","s":2,"c":5,"i":0,"o":5,"a":330},{"d":"2026-07-15","s":2,"c":7,"i":0,"o":7,"a":242},{"d":"2026-07-16","s":2,"c":7,"i":0,"o":7,"a":354},{"d":"2026-07-17","s":3,"c":6,"i":0,"o":6,"a":265},{"d":"2026-07-18","s":1,"c":3,"i":0,"o":3,"a":126},{"d":"2026-07-19","s":0,"c":1,"i":0,"o":1,"a":160},{"d":"2026-07-20","s":4,"c":3,"i":0,"o":3,"a":210},{"d":"2026-07-21","s":3,"c":4,"i":0,"o":4,"a":269}]},{"key":"gabriella abem","name":"Agent 17","team":"Team A","role":"Phone Support","lob":"PG1","status":"Active","sets":13,"conn":32,"in":0,"out":32,"calls":466,"daily":[{"d":"2026-07-14","s":2,"c":11,"i":0,"o":11,"a":138},{"d":"2026-07-15","s":1,"c":5,"i":0,"o":5,"a":130},{"d":"2026-07-16","s":2,"c":9,"i":0,"o":9,"a":110},{"d":"2026-07-17","s":5,"c":7,"i":0,"o":7,"a":88},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":3,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":0,"c":0,"i":0,"o":0,"a":0}]},{"key":"gerome maca","name":"Agent 18","team":"Team A","role":"Phone Support","lob":"Setter","status":"Active","sets":31,"conn":90,"in":0,"out":90,"calls":1153,"daily":[{"d":"2026-07-14","s":5,"c":18,"i":0,"o":18,"a":217},{"d":"2026-07-15","s":6,"c":16,"i":0,"o":16,"a":209},{"d":"2026-07-16","s":7,"c":16,"i":0,"o":16,"a":185},{"d":"2026-07-17","s":5,"c":11,"i":0,"o":11,"a":165},{"d":"2026-07-18","s":0,"c":1,"i":0,"o":1,"a":32},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":3,"c":11,"i":0,"o":11,"a":136},{"d":"2026-07-21","s":5,"c":17,"i":0,"o":17,"a":209}]},{"key":"jacinto jr basada","name":"Agent 19","team":"Team B","role":"Phone Support","lob":"Customer Care","status":"Active","sets":10,"conn":47,"in":47,"out":0,"calls":56,"daily":[{"d":"2026-07-14","s":3,"c":6,"i":6,"o":0,"a":7},{"d":"2026-07-15","s":0,"c":4,"i":4,"o":0,"a":9},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":5,"c":17,"i":17,"o":0,"a":18},{"d":"2026-07-19","s":2,"c":15,"i":15,"o":0,"a":15},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":0,"c":5,"i":5,"o":0,"a":7}]},{"key":"jackie ramos","name":"Agent 20","team":"Team A","role":"","lob":"","status":"Active","sets":13,"conn":56,"in":0,"out":56,"calls":790,"daily":[{"d":"2026-07-14","s":0,"c":4,"i":0,"o":4,"a":207},{"d":"2026-07-15","s":3,"c":9,"i":0,"o":9,"a":107},{"d":"2026-07-16","s":2,"c":12,"i":0,"o":12,"a":105},{"d":"2026-07-17","s":1,"c":5,"i":0,"o":5,"a":102},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":3,"c":9,"i":0,"o":9,"a":103},{"d":"2026-07-21","s":4,"c":17,"i":0,"o":17,"a":166}]},{"key":"janfrel aguilar","name":"Agent 21","team":"Team A","role":"","lob":"","status":"Active","sets":2,"conn":7,"in":0,"out":7,"calls":207,"daily":[{"d":"2026-07-14","s":2,"c":7,"i":0,"o":7,"a":207},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":0,"c":0,"i":0,"o":0,"a":0}]},{"key":"jessika elliott","name":"Agent 22","team":"Team C","role":"Phone Support","lob":"Internal Setter","status":"Active","sets":2,"conn":0,"in":0,"out":0,"calls":0,"daily":[{"d":"2026-07-14","s":1,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":1,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":0,"c":0,"i":0,"o":0,"a":0}]},{"key":"jhaziel gonzales","name":"Agent 23","team":"Team C","role":"Phone Support","lob":"Internal Setter","status":"Active","sets":2,"conn":0,"in":0,"out":0,"calls":0,"daily":[{"d":"2026-07-14","s":2,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":0,"c":0,"i":0,"o":0,"a":0}]},{"key":"jho may acosta","name":"Agent 25","team":"Team B","role":"Phone Support","lob":"PG1","status":"Active","sets":5,"conn":56,"in":56,"out":0,"calls":109,"daily":[{"d":"2026-07-14","s":2,"c":9,"i":9,"o":0,"a":9},{"d":"2026-07-15","s":0,"c":2,"i":2,"o":0,"a":5},{"d":"2026-07-16","s":0,"c":13,"i":13,"o":0,"a":18},{"d":"2026-07-17","s":0,"c":9,"i":9,"o":0,"a":16},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":1,"c":13,"i":13,"o":0,"a":20},{"d":"2026-07-21","s":2,"c":10,"i":10,"o":0,"a":41}]},{"key":"julius vizcayno","name":"Agent 26","team":"Team C","role":"Phone Support","lob":"Internal Setter","status":"Active","sets":1,"conn":0,"in":0,"out":0,"calls":0,"daily":[{"d":"2026-07-14","s":1,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":0,"c":0,"i":0,"o":0,"a":0}]},{"key":"kenneth mhar garcia libron","name":"Agent 27","team":"Team C","role":"Phone Support","lob":"Internal Setter","status":"Active","sets":3,"conn":0,"in":0,"out":0,"calls":0,"daily":[{"d":"2026-07-14","s":1,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":1,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":1,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":0,"c":0,"i":0,"o":0,"a":0}]},{"key":"kevin jabagat","name":"Agent 28","team":"Team D","role":"Phone Support","lob":"VIP","status":"Active","sets":17,"conn":59,"in":59,"out":0,"calls":120,"daily":[{"d":"2026-07-14","s":1,"c":7,"i":7,"o":0,"a":9},{"d":"2026-07-15","s":2,"c":16,"i":16,"o":0,"a":37},{"d":"2026-07-16","s":1,"c":5,"i":5,"o":0,"a":5},{"d":"2026-07-17","s":2,"c":7,"i":7,"o":0,"a":13},{"d":"2026-07-18","s":1,"c":4,"i":4,"o":0,"a":8},{"d":"2026-07-19","s":1,"c":3,"i":3,"o":0,"a":5},{"d":"2026-07-20","s":2,"c":10,"i":10,"o":0,"a":11},{"d":"2026-07-21","s":7,"c":7,"i":7,"o":0,"a":32}]},{"key":"kikumi keeshia matsuo","name":"Agent 29","team":"Team B","role":"Phone Support","lob":"Customer Care","status":"Active","sets":20,"conn":67,"in":67,"out":0,"calls":90,"daily":[{"d":"2026-07-14","s":0,"c":5,"i":5,"o":0,"a":5},{"d":"2026-07-15","s":0,"c":6,"i":6,"o":0,"a":7},{"d":"2026-07-16","s":4,"c":13,"i":13,"o":0,"a":14},{"d":"2026-07-17","s":2,"c":10,"i":10,"o":0,"a":10},{"d":"2026-07-18","s":1,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":2,"c":10,"i":10,"o":0,"a":10},{"d":"2026-07-20","s":4,"c":12,"i":12,"o":0,"a":16},{"d":"2026-07-21","s":7,"c":11,"i":11,"o":0,"a":28}]},{"key":"kim paolo planas","name":"Agent 30","team":"Team A","role":"Phone Support","lob":"ASR","status":"Active","sets":39,"conn":84,"in":0,"out":84,"calls":1421,"daily":[{"d":"2026-07-14","s":6,"c":18,"i":0,"o":18,"a":157},{"d":"2026-07-15","s":7,"c":16,"i":0,"o":16,"a":223},{"d":"2026-07-16","s":8,"c":17,"i":0,"o":17,"a":249},{"d":"2026-07-17","s":5,"c":13,"i":0,"o":13,"a":230},{"d":"2026-07-18","s":5,"c":3,"i":0,"o":3,"a":114},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":3,"c":6,"i":0,"o":6,"a":201},{"d":"2026-07-21","s":5,"c":11,"i":0,"o":11,"a":247}]},{"key":"kristal joy bundalian","name":"Agent 32","team":"Team A","role":"","lob":"","status":"Active","sets":11,"conn":52,"in":0,"out":52,"calls":998,"daily":[{"d":"2026-07-14","s":3,"c":7,"i":0,"o":7,"a":137},{"d":"2026-07-15","s":0,"c":10,"i":0,"o":10,"a":208},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":1,"c":10,"i":0,"o":10,"a":215},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":2,"c":11,"i":0,"o":11,"a":240},{"d":"2026-07-21","s":5,"c":14,"i":0,"o":14,"a":198}]},{"key":"lucky sardia","name":"Agent 33","team":"Team B","role":"Phone Support","lob":"Customer Care","status":"Active","sets":24,"conn":70,"in":70,"out":0,"calls":83,"daily":[{"d":"2026-07-14","s":3,"c":9,"i":9,"o":0,"a":11},{"d":"2026-07-15","s":2,"c":5,"i":5,"o":0,"a":8},{"d":"2026-07-16","s":7,"c":13,"i":13,"o":0,"a":15},{"d":"2026-07-17","s":2,"c":8,"i":8,"o":0,"a":11},{"d":"2026-07-18","s":5,"c":12,"i":12,"o":0,"a":12},{"d":"2026-07-19","s":1,"c":8,"i":8,"o":0,"a":8},{"d":"2026-07-20","s":3,"c":13,"i":13,"o":0,"a":16},{"d":"2026-07-21","s":1,"c":2,"i":2,"o":0,"a":2}]},{"key":"marc bryan paguinto","name":"Agent 34","team":"Team D","role":"Phone Support","lob":"PG1","status":"Active","sets":14,"conn":57,"in":57,"out":0,"calls":72,"daily":[{"d":"2026-07-14","s":4,"c":10,"i":10,"o":0,"a":14},{"d":"2026-07-15","s":3,"c":8,"i":8,"o":0,"a":12},{"d":"2026-07-16","s":2,"c":10,"i":10,"o":0,"a":10},{"d":"2026-07-17","s":1,"c":10,"i":10,"o":0,"a":12},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":4,"c":14,"i":14,"o":0,"a":15},{"d":"2026-07-21","s":0,"c":5,"i":5,"o":0,"a":9}]},{"key":"maria charla pedrigal","name":"Agent 35","team":"Team A","role":"","lob":"","status":"Active","sets":4,"conn":14,"in":0,"out":14,"calls":327,"daily":[{"d":"2026-07-14","s":3,"c":9,"i":0,"o":9,"a":204},{"d":"2026-07-15","s":1,"c":5,"i":0,"o":5,"a":123},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":0,"c":0,"i":0,"o":0,"a":0}]},{"key":"maria lourdes ortiz","name":"Agent 36","team":"Team D","role":"Phone Support","lob":"PG1","status":"Active","sets":38,"conn":120,"in":120,"out":0,"calls":253,"daily":[{"d":"2026-07-14","s":9,"c":32,"i":32,"o":0,"a":62},{"d":"2026-07-15","s":6,"c":25,"i":25,"o":0,"a":48},{"d":"2026-07-16","s":6,"c":16,"i":16,"o":0,"a":39},{"d":"2026-07-17","s":4,"c":15,"i":15,"o":0,"a":28},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":7,"c":12,"i":12,"o":0,"a":30},{"d":"2026-07-21","s":6,"c":20,"i":20,"o":0,"a":46}]},{"key":"marie rose canada","name":"Agent 37","team":"Team A","role":"Phone Support","lob":"Internal Setter","status":"Active","sets":10,"conn":37,"in":0,"out":37,"calls":443,"daily":[{"d":"2026-07-14","s":6,"c":16,"i":0,"o":16,"a":154},{"d":"2026-07-15","s":1,"c":6,"i":0,"o":6,"a":89},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":2,"c":10,"i":0,"o":10,"a":116},{"d":"2026-07-21","s":1,"c":5,"i":0,"o":5,"a":84}]},{"key":"mark donan","name":"Agent 38","team":"Support","role":"Supervisor","lob":"PG1","status":"Active","sets":3,"conn":0,"in":0,"out":0,"calls":0,"daily":[{"d":"2026-07-14","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":1,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":2,"c":0,"i":0,"o":0,"a":0}]},{"key":"mark ryan francis","name":"Agent 39","team":"Team B","role":"Phone Support","lob":"PG1","status":"Active","sets":13,"conn":48,"in":48,"out":0,"calls":59,"daily":[{"d":"2026-07-14","s":2,"c":10,"i":10,"o":0,"a":10},{"d":"2026-07-15","s":0,"c":3,"i":3,"o":0,"a":4},{"d":"2026-07-16","s":3,"c":9,"i":9,"o":0,"a":13},{"d":"2026-07-17","s":6,"c":10,"i":10,"o":0,"a":11},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":2,"c":16,"i":16,"o":0,"a":21},{"d":"2026-07-21","s":0,"c":0,"i":0,"o":0,"a":0}]},{"key":"martin lorenzo savellano","name":"Agent 40","team":"Team D","role":"Phone Support","lob":"PG1","status":"Active","sets":25,"conn":81,"in":81,"out":0,"calls":294,"daily":[{"d":"2026-07-14","s":7,"c":15,"i":15,"o":0,"a":64},{"d":"2026-07-15","s":5,"c":14,"i":14,"o":0,"a":28},{"d":"2026-07-16","s":3,"c":15,"i":15,"o":0,"a":27},{"d":"2026-07-17","s":3,"c":14,"i":14,"o":0,"a":33},{"d":"2026-07-18","s":0,"c":2,"i":2,"o":0,"a":2},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":2,"c":10,"i":10,"o":0,"a":22},{"d":"2026-07-21","s":5,"c":11,"i":11,"o":0,"a":118}]},{"key":"marwin ray reyes","name":"Agent 41","team":"Team A","role":"Phone Support","lob":"Retention","status":"Active","sets":36,"conn":50,"in":0,"out":50,"calls":978,"daily":[{"d":"2026-07-14","s":4,"c":10,"i":0,"o":10,"a":134},{"d":"2026-07-15","s":5,"c":9,"i":0,"o":9,"a":147},{"d":"2026-07-16","s":3,"c":4,"i":0,"o":4,"a":165},{"d":"2026-07-17","s":2,"c":5,"i":0,"o":5,"a":170},{"d":"2026-07-18","s":6,"c":1,"i":0,"o":1,"a":71},{"d":"2026-07-19","s":4,"c":4,"i":0,"o":4,"a":40},{"d":"2026-07-20","s":6,"c":8,"i":0,"o":8,"a":122},{"d":"2026-07-21","s":6,"c":9,"i":0,"o":9,"a":129}]},{"key":"mayzelyn revuelto","name":"Agent 42","team":"Team D","role":"Phone Support","lob":"PG1","status":"Active","sets":16,"conn":79,"in":79,"out":0,"calls":105,"daily":[{"d":"2026-07-14","s":3,"c":17,"i":17,"o":0,"a":20},{"d":"2026-07-15","s":3,"c":11,"i":11,"o":0,"a":14},{"d":"2026-07-16","s":4,"c":17,"i":17,"o":0,"a":20},{"d":"2026-07-17","s":3,"c":13,"i":13,"o":0,"a":20},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":2,"c":15,"i":15,"o":0,"a":24},{"d":"2026-07-21","s":1,"c":6,"i":6,"o":0,"a":7}]},{"key":"melody tubio libradilla","name":"Agent 43","team":"Team D","role":"Phone Support","lob":"Customer Care","status":"Active","sets":11,"conn":63,"in":63,"out":0,"calls":146,"daily":[{"d":"2026-07-14","s":3,"c":5,"i":5,"o":0,"a":34},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":1,"c":14,"i":14,"o":0,"a":24},{"d":"2026-07-17","s":1,"c":12,"i":12,"o":0,"a":17},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":2,"c":22,"i":22,"o":0,"a":24},{"d":"2026-07-21","s":4,"c":10,"i":10,"o":0,"a":47}]},{"key":"micha aborquez","name":"Agent 44","team":"Team B","role":"Phone Support","lob":"Customer Care","status":"Active","sets":17,"conn":75,"in":75,"out":0,"calls":118,"daily":[{"d":"2026-07-14","s":2,"c":7,"i":7,"o":0,"a":10},{"d":"2026-07-15","s":0,"c":3,"i":3,"o":0,"a":5},{"d":"2026-07-16","s":4,"c":15,"i":15,"o":0,"a":19},{"d":"2026-07-17","s":3,"c":10,"i":10,"o":0,"a":16},{"d":"2026-07-18","s":1,"c":6,"i":6,"o":0,"a":6},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":3,"c":20,"i":20,"o":0,"a":23},{"d":"2026-07-21","s":4,"c":14,"i":14,"o":0,"a":39}]},{"key":"nicolo gerard gonzalez","name":"Agent 45","team":"Team A","role":"","lob":"","status":"Active","sets":16,"conn":43,"in":0,"out":43,"calls":1112,"daily":[{"d":"2026-07-14","s":3,"c":6,"i":0,"o":6,"a":269},{"d":"2026-07-15","s":3,"c":6,"i":0,"o":6,"a":231},{"d":"2026-07-16","s":3,"c":7,"i":0,"o":7,"a":152},{"d":"2026-07-17","s":5,"c":13,"i":0,"o":13,"a":166},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":2,"c":10,"i":0,"o":10,"a":172},{"d":"2026-07-21","s":0,"c":1,"i":0,"o":1,"a":122}]},{"key":"omar abdallah mahmoud","name":"Agent 46","team":"Team D","role":"Retention","lob":"Internal Setter","status":"Active","sets":11,"conn":31,"in":31,"out":0,"calls":47,"daily":[{"d":"2026-07-14","s":1,"c":3,"i":3,"o":0,"a":3},{"d":"2026-07-15","s":2,"c":4,"i":4,"o":0,"a":11},{"d":"2026-07-16","s":2,"c":9,"i":9,"o":0,"a":16},{"d":"2026-07-17","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":3,"c":7,"i":7,"o":0,"a":8},{"d":"2026-07-21","s":3,"c":8,"i":8,"o":0,"a":9}]},{"key":"philip josh caperig","name":"Agent 47","team":"Support","role":"Supervisor","lob":"Internal Setter","status":"Active","sets":3,"conn":0,"in":0,"out":0,"calls":0,"daily":[{"d":"2026-07-14","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":2,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":1,"c":0,"i":0,"o":0,"a":0}]},{"key":"phoebe estel ymil collado","name":"Agent 48","team":"Team C","role":"Phone Support","lob":"Internal Setter","status":"Active","sets":1,"conn":0,"in":0,"out":0,"calls":0,"daily":[{"d":"2026-07-14","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":1,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":0,"c":0,"i":0,"o":0,"a":0}]},{"key":"prince wendell de luna","name":"Agent 49","team":"Team B","role":"Phone Support","lob":"PG1","status":"Active","sets":26,"conn":85,"in":85,"out":0,"calls":120,"daily":[{"d":"2026-07-14","s":2,"c":10,"i":10,"o":0,"a":11},{"d":"2026-07-15","s":3,"c":3,"i":3,"o":0,"a":5},{"d":"2026-07-16","s":7,"c":12,"i":12,"o":0,"a":17},{"d":"2026-07-17","s":3,"c":14,"i":14,"o":0,"a":17},{"d":"2026-07-18","s":4,"c":15,"i":15,"o":0,"a":18},{"d":"2026-07-19","s":1,"c":8,"i":8,"o":0,"a":9},{"d":"2026-07-20","s":2,"c":12,"i":12,"o":0,"a":16},{"d":"2026-07-21","s":4,"c":11,"i":11,"o":0,"a":27}]},{"key":"remen po","name":"Agent 50","team":"Support","role":"Supervisor","lob":"PG1","status":"Active","sets":2,"conn":0,"in":0,"out":0,"calls":0,"daily":[{"d":"2026-07-14","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":2,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":0,"c":0,"i":0,"o":0,"a":0}]},{"key":"reynan sularan","name":"Agent 51","team":"Team D","role":"Phone Support","lob":"PG1","status":"Active","sets":28,"conn":96,"in":96,"out":0,"calls":137,"daily":[{"d":"2026-07-14","s":7,"c":25,"i":25,"o":0,"a":34},{"d":"2026-07-15","s":5,"c":25,"i":25,"o":0,"a":28},{"d":"2026-07-16","s":2,"c":10,"i":10,"o":0,"a":14},{"d":"2026-07-17","s":1,"c":9,"i":9,"o":0,"a":14},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":7,"c":14,"i":14,"o":0,"a":18},{"d":"2026-07-21","s":6,"c":13,"i":13,"o":0,"a":29}]},{"key":"rheena jayne tomakin","name":"Agent 52","team":"Team B","role":"Phone Support","lob":"Customer Care","status":"Active","sets":19,"conn":83,"in":83,"out":0,"calls":150,"daily":[{"d":"2026-07-14","s":3,"c":6,"i":6,"o":0,"a":8},{"d":"2026-07-15","s":2,"c":3,"i":3,"o":0,"a":5},{"d":"2026-07-16","s":4,"c":15,"i":15,"o":0,"a":17},{"d":"2026-07-17","s":0,"c":12,"i":12,"o":0,"a":12},{"d":"2026-07-18","s":2,"c":8,"i":8,"o":0,"a":10},{"d":"2026-07-19","s":3,"c":11,"i":11,"o":0,"a":14},{"d":"2026-07-20","s":4,"c":19,"i":19,"o":0,"a":20},{"d":"2026-07-21","s":1,"c":9,"i":9,"o":0,"a":64}]},{"key":"romalyn magallon","name":"Agent 53","team":"Team D","role":"Phone Support","lob":"PG1","status":"Active","sets":13,"conn":56,"in":56,"out":0,"calls":109,"daily":[{"d":"2026-07-14","s":3,"c":14,"i":14,"o":0,"a":54},{"d":"2026-07-15","s":3,"c":10,"i":10,"o":0,"a":10},{"d":"2026-07-16","s":1,"c":9,"i":9,"o":0,"a":15},{"d":"2026-07-17","s":3,"c":8,"i":8,"o":0,"a":10},{"d":"2026-07-18","s":1,"c":4,"i":4,"o":0,"a":5},{"d":"2026-07-19","s":0,"c":1,"i":1,"o":0,"a":1},{"d":"2026-07-20","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":2,"c":10,"i":10,"o":0,"a":14}]},{"key":"sitti besas","name":"Agent 54","team":"Team B","role":"Phone Support","lob":"PG1","status":"Active","sets":1,"conn":15,"in":15,"out":0,"calls":25,"daily":[{"d":"2026-07-14","s":1,"c":2,"i":2,"o":0,"a":2},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":0,"c":2,"i":2,"o":0,"a":2},{"d":"2026-07-17","s":0,"c":1,"i":1,"o":0,"a":1},{"d":"2026-07-18","s":0,"c":4,"i":4,"o":0,"a":7},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":0,"c":1,"i":1,"o":0,"a":1},{"d":"2026-07-21","s":0,"c":5,"i":5,"o":0,"a":12}]},{"key":"thomas john lommen","name":"Agent 55","team":"Team D","role":"Supervisor","lob":"Customer Care","status":"Active","sets":26,"conn":114,"in":114,"out":0,"calls":165,"daily":[{"d":"2026-07-14","s":6,"c":30,"i":30,"o":0,"a":32},{"d":"2026-07-15","s":5,"c":30,"i":30,"o":0,"a":31},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":2,"c":16,"i":16,"o":0,"a":18},{"d":"2026-07-19","s":2,"c":13,"i":13,"o":0,"a":13},{"d":"2026-07-20","s":5,"c":15,"i":15,"o":0,"a":15},{"d":"2026-07-21","s":6,"c":10,"i":10,"o":0,"a":56}]},{"key":"vian perez","name":"Agent 56","team":"Team C","role":"Phone Support","lob":"Internal Setter","status":"Active","sets":6,"conn":0,"in":0,"out":0,"calls":0,"daily":[{"d":"2026-07-14","s":1,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-15","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-16","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-17","s":1,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-18","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-19","s":0,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-20","s":2,"c":0,"i":0,"o":0,"a":0},{"d":"2026-07-21","s":2,"c":0,"i":0,"o":0,"a":0}]}]};
+const TARGET = DATA.target;
+
+DATA.agents.forEach(a=>{
+  a.seg = a.conn===0 ? 'No calls' : (a.out>a.in ? 'Outbound' : 'Inbound');
+  a.connrate = a.calls ? a.conn/a.calls*100 : null;
+  a.rate = a.conn ? a.sets/a.conn*100 : null;
+  a.gap  = a.rate===null ? null : a.rate-TARGET;
+});
+
+const state = { channel:'all', team:'all', minconn:30, sort:'rate', dir:'asc', period:'day' };
+
+/* ---- period bucketing -------------------------------------------------
+   The call-log window is 14–21 Jul 2026, so week and month buckets are
+   necessarily partial. Each bucket reports how many days it actually holds
+   against how many that calendar period contains.                      */
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function weekStart(iso){
+  const d = new Date(iso+'T00:00:00Z');
+  const off = (d.getUTCDay()+6)%7;              /* Monday = 0 */
+  d.setUTCDate(d.getUTCDate()-off);
+  return d.toISOString().slice(0,10);
+}
+function daysInMonth(iso){
+  const [y,m] = iso.split('-').map(Number);
+  return new Date(Date.UTC(y,m,0)).getUTCDate();
+}
+function buckets(){
+  if(state.period==='day')
+    return DATA.days.map((d,i)=>({key:d, label:d.slice(8), idx:[i], have:1, want:1}));
+  const map = new Map();
+  DATA.days.forEach((d,i)=>{
+    const key = state.period==='week' ? weekStart(d) : d.slice(0,7);
+    if(!map.has(key)) map.set(key,[]);
+    map.get(key).push(i);
+  });
+  return [...map.entries()].map(([key,idx])=>{
+    const want = state.period==='week' ? 7 : daysInMonth(key+'-01');
+    const label = state.period==='week'
+      ? MON[+key.slice(5,7)-1]+' '+(+key.slice(8,10))
+      : MON[+key.slice(5,7)-1]+' '+key.slice(0,4);
+    return {key, label, idx, have:idx.length, want};
+  });
+}
+const fmt1 = v => v===null||v===undefined ? '—' : v.toFixed(1)+'%';
+const fmtN = v => v.toLocaleString('en-US');
+
+/* brand encoding: orange = shortfall. ink = met or exceeded. */
+const rateColor = r => r===null ? 'var(--muted)' : r>=TARGET ? 'var(--ink)' : 'var(--orange)';
+const deltaColor = g => g===null ? 'var(--muted)'
+  : g>=0 ? 'var(--ink)' : g<=-20 ? 'var(--orange-dk)' : 'var(--orange)';
+
+function pool(){
+  return DATA.agents.filter(a=>{
+    if(state.channel!=='all' && a.seg!==state.channel) return false;
+    if(state.team!=='all' && a.team!==state.team) return false;
+    return true;
+  });
+}
+function totals(list){
+  const t={sets:0,conn:0,calls:0,in:0,out:0,n:list.length};
+  list.forEach(a=>{t.sets+=a.sets;t.conn+=a.conn;t.calls+=a.calls;t.in+=a.in;t.out+=a.out;});
+  t.rate = t.conn ? t.sets/t.conn*100 : null;
+  t.connrate = t.calls ? t.conn/t.calls*100 : null;
+  return t;
+}
+/* achieved + gap geometry, shared by gauge / team bars / mini bars */
+function bars(rate){
+  if(rate===null) return {a:0,gl:0,gw:0};
+  const a = Math.min(100, rate);
+  return {a, gl:a, gw: Math.max(0, TARGET-a)};
+}
+
+function renderHero(){
+  const list = pool(), t = totals(list);
+  const scope = [state.team==='all'?'Enterprise':state.team,
+                 state.channel==='all'?null:state.channel].filter(Boolean).join(' · ');
+  document.getElementById('scope-label').textContent = scope;
+  const hr = document.getElementById('hero-rate');
+  hr.textContent = t.rate===null?'—':t.rate.toFixed(1)+'%';
+  hr.style.color = rateColor(t.rate);
+  document.getElementById('hero-detail').textContent =
+    fmtN(t.sets)+' sets from '+fmtN(t.conn)+' connected calls · '+t.n+' agents';
+  const chip = document.getElementById('hero-gap');
+  if(t.rate===null){ chip.textContent=''; chip.style.background='transparent'; }
+  else{
+    const d = t.rate-TARGET;
+    chip.textContent = (d>=0?'+':'')+d.toFixed(1)+' PTS VS 40% TARGET';
+    chip.style.background = d>=0 ? 'var(--surface-2)' : 'var(--orange-soft)';
+    chip.style.color = d>=0 ? 'var(--ink)' : 'var(--orange-dk)';
+  }
+  const b = bars(t.rate);
+  document.getElementById('gauge-fill').style.width = b.a+'%';
+  const g = document.getElementById('gauge-gap');
+  g.style.left = b.gl+'%'; g.style.width = b.gw+'%';
+
+  const shortfall = t.rate===null?0:Math.max(0, Math.round(t.conn*TARGET/100) - t.sets);
+  const kpis = [
+    ['Dials', fmtN(t.calls), 'all call attempts'],
+    ['Connected', fmtN(t.conn), fmt1(t.connrate)+' of dials reach 90s'],
+    ['Sets', fmtN(t.sets), 'distinct email addresses'],
+    ['Sets to reach 40%', '+'+fmtN(shortfall), shortfall?'additional sets needed':'target met'],
+    ['Agents', String(t.n), (list.filter(a=>a.rate!==null&&a.rate>=TARGET).length)+' at or above target']
+  ];
+  document.getElementById('kpis').innerHTML = kpis.map(k=>
+    `<div class="kpi"><div class="kpi-label">${k[0]}</div>
+     <div class="kpi-val">${k[1]}</div><div class="kpi-note">${k[2]}</div></div>`).join('')
+    + '<div class="kpi" aria-hidden="true"></div>'.repeat(3);
+}
+
+function renderSegs(){
+  const base = DATA.agents.filter(a=> state.team==='all' || a.team===state.team);
+  document.getElementById('segcards').innerHTML = ['Inbound','Outbound'].map(s=>{
+    const t = totals(base.filter(a=>a.seg===s));
+    if(!t.n) return `<div class="segcard"><h3>${s}</h3><div class="big-sub">No agents in this view</div></div>`;
+    const met = t.rate>=TARGET;
+    return `<div class="segcard">
+      <h3>${s}<span class="pill" style="background:${met?'var(--surface)':'var(--orange)'};
+        color:${met?'var(--ink)':'var(--mist)'}">${met?'At target':'Below'}</span></h3>
+      <div class="rate" style="color:${rateColor(t.rate)}">${fmt1(t.rate)}</div>
+      <div class="segrow"><span>Connect rate</span><b>${fmt1(t.connrate)}</b></div>
+      <div class="segrow"><span>Connected calls</span><b>${fmtN(t.conn)}</b></div>
+      <div class="segrow"><span>Sets</span><b>${fmtN(t.sets)}</b></div>
+      <div class="segrow"><span>At target</span>
+        <b>${base.filter(a=>a.seg===s&&a.rate!==null&&a.rate>=TARGET).length} of ${t.n} agents</b></div>
+    </div>`;
+  }).join('');
+}
+
+function renderTrend(){
+  const list = pool();
+  const bs = buckets();
+  const days = bs.map(b=>{
+    let s=0,c=0;
+    b.idx.forEach(i=> list.forEach(a=>{ s+=a.daily[i].s; c+=a.daily[i].c; }));
+    return {d:b.label, key:b.key, s, c, rate: c? s/c*100 : null,
+            partial: b.have < b.want, have:b.have, want:b.want};
+  });
+  const noun = state.period==='day' ? 'day' : state.period;
+  document.getElementById('trend-title').textContent =
+    state.period==='day' ? 'Daily booking rate'
+    : state.period==='week' ? 'Weekly booking rate' : 'Monthly booking rate';
+  const partials = days.filter(d=>d.partial).length;
+  document.getElementById('trend-sub').textContent =
+    'Sets ÷ connected calls per '+noun+', against the 40% target.'
+    + (partials ? '  Call data covers 14–21 Jul only, so '
+        + (partials===days.length
+            ? 'every '+noun+' shown is partial.'
+            : partials+' of the '+days.length+' '+noun+'s shown '+(partials===1?'is':'are')+' partial.')
+      : '');
+  const W=440,H=180,PL=34,PR=10,PT=12,PB=30;
+  const iw=W-PL-PR, ih=H-PT-PB;
+  const maxC = Math.max(...days.map(d=>d.c),1);
+  const x = i => PL + (iw/days.length)*(i+.5);
+  const bw = Math.max(6, iw/days.length*0.5);
+  const y = r => PT + ih - (Math.min(r,80)/80)*ih;
+  let bars_='', line='', dots='', ticks='', grid='';
+  [0,20,40,60,80].forEach(v=>{
+    const isT = v===TARGET;
+    grid += `<line x1="${PL}" x2="${W-PR}" y1="${y(v)}" y2="${y(v)}"
+      stroke="${isT?'var(--rule)':'var(--line)'}" stroke-width="${isT?1.5:1}"
+      ${isT?'stroke-dasharray="4 3" opacity=".8"':''}/>
+      <text x="${PL-6}" y="${y(v)+3}" text-anchor="end" font-size="9"
+      font-family="var(--mono)" fill="${isT?'var(--ink-2)':'var(--muted)'}">${v}%</text>`;
+  });
+  days.forEach((d,i)=>{
+    const bh = (d.c/maxC)*ih*0.9;
+    const cov = d.partial ? ` · ${d.have} of ${d.want} days covered` : '';
+    bars_ += `<rect x="${x(i)-bw/2}" y="${PT+ih-bh}" width="${bw}" height="${bh}"
+      fill="var(--surface-2)" stroke="var(--line-2)" stroke-width=".8"
+      stroke-dasharray="${d.partial?'3 2':'0'}">
+      <title>${d.d}: ${d.c} connected${cov}</title></rect>`;
+    ticks += `<text x="${x(i)}" y="${H-11}" text-anchor="middle" font-size="9"
+      font-family="var(--mono)" fill="var(--muted)">${d.d}${d.partial?'*':''}</text>`;
+    if(d.rate!==null){
+      line += (line?' L':'M')+x(i)+' '+y(d.rate);
+      dots += `<circle cx="${x(i)}" cy="${y(d.rate)}" r="3.4" fill="var(--orange)"
+        stroke="var(--surface)" stroke-width="1.4">
+        <title>${d.d}: ${d.rate.toFixed(1)}% — ${d.s} sets / ${d.c} connected${cov}</title></circle>`;
+    }
+  });
+  document.getElementById('trend').innerHTML =
+    `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" role="img"
+      aria-label="Daily booking rate against the 40 percent target">
+      ${grid}${bars_}<path d="${line}" fill="none" stroke="var(--orange)" stroke-width="2"
+      stroke-linejoin="round" stroke-linecap="round"/>${dots}${ticks}</svg>`;
+}
+
+function renderTeams(){
+  const byTeam = {};
+  DATA.agents.forEach(a=>{
+    if(state.channel!=='all' && a.seg!==state.channel) return;
+    (byTeam[a.team] = byTeam[a.team]||[]).push(a);
+  });
+  const rows = Object.entries(byTeam).map(([name,list])=>({name, t:totals(list)}))
+    .sort((a,b)=> (b.t.rate===null?-1:b.t.rate) - (a.t.rate===null?-1:a.t.rate));
+  document.getElementById('teams').innerHTML = rows.map(r=>{
+    const t=r.t, sel = state.team===r.name;
+    const solid = t.conn >= 10;
+    const rate = solid ? t.rate : null;
+    const mix = t.conn ? (t.out>t.in?'outbound':'inbound') : 'no calls in export';
+    const b = bars(rate);
+    const note = rate===null ? (t.conn ? 'sample too small' : 'no calls')
+      : (rate-TARGET>=0?'+':'')+(rate-TARGET).toFixed(1)+' pts';
+    return `<div class="team" role="button" tabindex="0" data-team="${r.name}" aria-selected="${sel}">
+      <div class="team-name">${r.name}<span>${t.n} agent${t.n===1?'':'s'} · ${mix}</span></div>
+      <div class="num mono" style="font-size:11.5px;color:var(--muted);text-align:right">
+        ${t.conn?fmtN(t.conn):'—'}</div>
+      <div class="bar-track">
+        <div class="bar-achieved" style="width:${b.a}%"></div>
+        <div class="bar-gap" style="left:${b.gl}%;width:${b.gw}%"></div>
+        <div class="bar-target" style="left:${TARGET}%"></div>
+      </div>
+      <div>
+        <div class="team-rate" style="color:${rateColor(rate)}">${fmt1(rate)}</div>
+        <div class="team-delta">${note}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.team').forEach(el=>{
+    const go = ()=>{ state.team = state.team===el.dataset.team ? 'all' : el.dataset.team; renderAll(); };
+    el.addEventListener('click', go);
+    el.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();go();} });
+  });
+}
+
+function sparkline(a){
+  const W=76,H=17;
+  const bs = buckets();
+  const pts = bs.map((b,i)=>{
+    let s=0,c=0; b.idx.forEach(j=>{ s+=a.daily[j].s; c+=a.daily[j].c; });
+    return {i, r: c? s/c*100 : null};
+  });
+  if(pts.length===1){
+    const p=pts[0];
+    if(p.r===null) return '<span style="color:var(--muted);font-size:11px">—</span>';
+    return `<svg class="spark" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true">
+      <line x1="0" x2="${W}" y1="${H-2-(Math.min(TARGET,80)/80)*(H-4)}"
+        y2="${H-2-(Math.min(TARGET,80)/80)*(H-4)}" stroke="var(--rule)"
+        stroke-dasharray="2 2" opacity=".4" stroke-width="1"/>
+      <circle cx="${W/2}" cy="${H-2-(Math.min(p.r,80)/80)*(H-4)}" r="2.6"
+        fill="${rateColor(a.rate)}"/></svg>`;
+  }
+  const has = pts.filter(p=>p.r!==null);
+  if(!has.length) return '<span style="color:var(--muted);font-size:11px">—</span>';
+  const x = i => (W/(pts.length-1))*i;
+  const y = r => H-2 - (Math.min(r,80)/80)*(H-4);
+  let path='', last=null;
+  pts.forEach(p=>{ if(p.r===null) return;
+    path += (path?' L':'M')+x(p.i).toFixed(1)+' '+y(p.r).toFixed(1); last=p; });
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true">
+    <line x1="0" x2="${W}" y1="${y(TARGET)}" y2="${y(TARGET)}" stroke="var(--rule)"
+      stroke-dasharray="2 2" opacity=".4" stroke-width="1"/>
+    <path d="${path}" fill="none" stroke="${rateColor(a.rate)}" stroke-width="1.6"
+      stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${x(last.i).toFixed(1)}" cy="${y(last.r).toFixed(1)}" r="2.2" fill="${rateColor(a.rate)}"/>
+  </svg>`;
+}
+
+function renderTable(){
+  let list = pool().filter(a=> a.conn>=state.minconn);
+  const k=state.sort, dir = state.dir==='asc'?1:-1;
+  list.sort((a,b)=>{
+    let va=a[k], vb=b[k];
+    if(k==='name') return dir*String(va).localeCompare(String(vb));
+    if(va===null) return 1; if(vb===null) return -1;
+    return dir*(va-vb);
+  });
+  document.getElementById('rows').innerHTML = list.map(a=>{
+    const b = bars(a.rate);
+    return `<tr${a.conn<30?' class="thin"':''}>
+      <td><div class="agent-cell"><b>${a.name}</b>
+        <span>${a.team} · ${a.seg}</span></div></td>
+      <td>${fmtN(a.calls)}</td>
+      <td>${fmtN(a.conn)}</td>
+      <td style="color:var(--muted)">${fmt1(a.connrate)}</td>
+      <td>${a.sets}</td>
+      <td><div class="rate-cell">
+        <div class="mini">
+          <div class="bar-achieved" style="width:${b.a}%"></div>
+          <div class="bar-gap" style="left:${b.gl}%;width:${b.gw}%"></div>
+          <u style="left:${TARGET}%"></u></div>
+        <span class="rate-num" style="color:${rateColor(a.rate)}">${fmt1(a.rate)}</span>
+      </div></td>
+      <td class="mono" style="font-size:11.5px;color:${deltaColor(a.gap)}">
+        ${a.gap===null?'—':(a.gap>=0?'+':'')+a.gap.toFixed(1)}</td>
+      <td>${sparkline(a)}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('empty').hidden = list.length>0;
+  const below = list.filter(a=>a.rate!==null && a.rate<TARGET).length;
+  document.getElementById('agent-sub').textContent =
+    `${list.length} agents with at least ${state.minconn} connected calls · `+
+    `${below} below the 40% target · rows dimmed where the sample is under 30 connected calls`;
+}
+
+function renderChips(){
+  const teams = [...new Set(DATA.agents.map(a=>a.team))].sort();
+  document.getElementById('team-chips').innerHTML =
+    ['all',...teams].map(t=>`<button class="chip" data-team="${t}"
+      aria-pressed="${state.team===t}">${t==='all'?'All teams':t}</button>`).join('');
+  document.querySelectorAll('#team-chips .chip').forEach(b=>
+    b.addEventListener('click',()=>{ state.team=b.dataset.team; renderAll(); }));
+}
+function renderAll(){ renderChips(); renderHero(); renderSegs(); renderTrend(); renderTeams(); renderTable(); }
+
+document.getElementById('m-window').textContent =
+  DATA.window.from.slice(5).replace('-','/')+' – '+DATA.window.to.slice(5).replace('-','/')+'/2026';
+
+document.querySelectorAll('#seg-channel button').forEach(b=>
+  b.addEventListener('click',()=>{
+    state.channel=b.dataset.v;
+    document.querySelectorAll('#seg-channel button').forEach(x=>
+      x.setAttribute('aria-pressed', String(x===b)));
+    renderAll();
+  }));
+document.querySelectorAll('#seg-period button').forEach(b=>
+  b.addEventListener('click',()=>{
+    state.period=b.dataset.v;
+    document.querySelectorAll('#seg-period button').forEach(x=>
+      x.setAttribute('aria-pressed', String(x===b)));
+    renderTrend(); renderTable();
+  }));
+document.getElementById('minconn').addEventListener('input',e=>{
+  state.minconn=+e.target.value;
+  document.getElementById('minconn-val').textContent=e.target.value;
+  renderTable();
+});
+document.querySelectorAll('th[data-k]').forEach(th=>{
+  const go=()=>{
+    const k=th.dataset.k; if(k==='trend') return;
+    if(state.sort===k) state.dir = state.dir==='asc'?'desc':'asc';
+    else { state.sort=k; state.dir = k==='name'?'asc':'desc'; }
+    document.querySelectorAll('th[data-k]').forEach(x=>x.removeAttribute('data-dir'));
+    th.setAttribute('data-dir', state.dir);
+    renderTable();
+  };
+  th.addEventListener('click',go);
+  th.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();go();} });
+});
+
+renderAll();
+</script>

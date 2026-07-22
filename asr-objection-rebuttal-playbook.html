@@ -1,0 +1,330 @@
+<title>ASR Objection & Rebuttal Playbook</title>
+<style>
+:root{
+  --orange:#FD3300; --orange-dk:#DB2C00;
+  --black:#1D1A1A; --gray:#7B726C; --stone:#B3AAA3;
+  --pebble:#DFD9D5; --sand:#ECE9E4; --fog:#F4F2F0; --mist:#FCFAFA;
+  --ground:var(--fog); --surface:var(--mist); --surface-2:var(--sand);
+  --ink:var(--black); --ink-2:#453F3D; --muted:var(--gray);
+  --line:var(--pebble); --line-2:var(--stone);
+  --orange-soft:rgba(253,51,0,.09); --rule:var(--black);
+  --shadow:0 1px 2px rgba(29,26,26,.05), 0 3px 12px rgba(29,26,26,.05);
+  --sans:"Repro","Repro Regular","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+  --serif:"GT Super Text","GT Super Display","GT Super",Georgia,"Times New Roman",serif;
+  --mono:"Repro Mono","Repro Monospaced",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --ground:#141111; --surface:#1D1A1A; --surface-2:#262221;
+  --ink:var(--mist); --ink-2:var(--pebble); --muted:var(--stone);
+  --line:#332E2D; --line-2:#453F3D; --orange-soft:rgba(253,51,0,.15); --rule:var(--mist);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 3px 12px rgba(0,0,0,.3);}}
+:root[data-theme="dark"]{
+  --ground:#141111; --surface:#1D1A1A; --surface-2:#262221;
+  --ink:var(--mist); --ink-2:var(--pebble); --muted:var(--stone);
+  --line:#332E2D; --line-2:#453F3D; --orange-soft:rgba(253,51,0,.15); --rule:var(--mist);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 3px 12px rgba(0,0,0,.3);}
+:root[data-theme="light"]{
+  --ground:var(--fog); --surface:var(--mist); --surface-2:var(--sand);
+  --ink:var(--black); --ink-2:#453F3D; --muted:var(--gray);
+  --line:var(--pebble); --line-2:var(--stone); --orange-soft:rgba(253,51,0,.09); --rule:var(--black);
+  --shadow:0 1px 2px rgba(29,26,26,.05), 0 3px 12px rgba(29,26,26,.05);}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:26px 22px 70px;display:flex;flex-direction:column;gap:24px}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:500;margin:0;text-wrap:balance}
+.mono{font-family:var(--mono)}
+.mast{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between;
+  border-bottom:3px solid var(--orange);padding-bottom:15px}
+.mast h1{font-size:28px;line-height:1.12}
+.brandline{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.brandmark{width:13px;height:13px;background:var(--orange);border-radius:50%;flex:none}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-2);font-weight:500}
+.mast-meta{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.85}
+
+.panel{background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)}
+.panel-head{padding:16px 18px 14px;border-bottom:1px solid var(--line)}
+.panel-head h2{font-size:19px}
+.panel-head p{margin:5px 0 0;font-size:12.5px;color:var(--muted);max-width:72ch}
+.panel-body{padding:18px}
+
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  text-align:right;padding:9px 10px;border-bottom:1px solid var(--line-2);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+tbody tr:last-child td{border-bottom:0}
+.rank{font-family:var(--mono);font-size:11px;color:var(--muted);width:26px}
+.bar{position:relative;width:120px;height:15px;background:var(--surface-2);border:1px solid var(--line);
+  display:inline-block;vertical-align:middle}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--ink)}
+.bar i.lost{background:var(--orange)}
+
+.callout{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--orange);
+  box-shadow:var(--shadow);padding:20px 24px;display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:start}
+.callout .big{font-size:52px;line-height:.92;font-weight:600;letter-spacing:-.04em;color:var(--orange);
+  font-variant-numeric:tabular-nums}
+.callout p{margin:0 0 9px;max-width:64ch}
+.callout p:last-child{margin-bottom:0}
+.callout .lede{font-family:var(--serif);font-size:20px;line-height:1.35}
+@media(max-width:700px){.callout{grid-template-columns:1fr}}
+
+.obj{border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);margin-bottom:20px}
+.obj:last-child{margin-bottom:0}
+.obj-head{padding:14px 18px;border-bottom:1px solid var(--line);background:var(--surface-2);
+  display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;justify-content:space-between}
+.obj-head h3{font-size:19px}
+.obj-head .n{font-family:var(--mono);font-size:10.5px;color:var(--muted);letter-spacing:.06em;
+  text-transform:uppercase}
+.obj-body{padding:18px}
+.sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 8px}
+.verbs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+.verb{background:var(--surface-2);border:1px solid var(--line);padding:5px 11px;font-size:12.5px;
+  color:var(--ink-2)}
+.means{margin:0 0 16px;font-size:14px;padding:12px 14px;background:var(--orange-soft);
+  border-left:3px solid var(--orange)}
+.means b{font-weight:600}
+.say{border:1px solid var(--ink);padding:0;margin-bottom:14px}
+.say-h{background:var(--ink);color:var(--ground);font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.14em;text-transform:uppercase;padding:6px 12px}
+.say-b{padding:14px;font-size:15px;line-height:1.6;font-family:var(--serif)}
+.say-b em{font-style:normal;background:var(--orange-soft);padding:1px 4px;color:var(--orange-dk);
+  font-family:var(--mono);font-size:13px}
+.dont{border:1px dashed var(--line-2);padding:12px 14px;margin-bottom:14px;font-size:13.5px;
+  color:var(--muted)}
+.dont b{color:var(--ink-2);font-weight:500;display:block;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.14em;text-transform:uppercase;margin-bottom:5px}
+.proof{border-top:1px dotted var(--line-2);padding-top:12px;font-size:13px}
+.proof .who{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:5px}
+.proof q{display:block;margin-bottom:8px;color:var(--ink-2)}
+.listen{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  text-decoration:none;color:var(--mist);background:var(--orange);padding:5px 12px;
+  display:inline-block;font-weight:500}
+.listen:hover{background:var(--orange-dk)}
+a:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line)}
+.rule{background:var(--surface);padding:16px}
+.rule .n{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--orange);display:block;
+  margin-bottom:7px}
+.rule h4{font-size:16px;margin-bottom:6px}
+.rule p{margin:0;font-size:13px;color:var(--ink-2)}
+footer{font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--line);padding-top:16px}
+footer b{color:var(--ink-2);font-weight:500}
+footer code{font-family:var(--mono);font-size:11px;background:var(--surface-2);padding:1px 5px}
+@media print{body{background:#fff}.panel,.obj,.callout{box-shadow:none}.listen{display:none}}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div>
+      <div class="brandline"><span class="brandmark"></span>
+        <span class="eyebrow">Performance Golf · ASR Appointment Setting</span></div>
+      <h1>Objection &amp; Rebuttal Playbook</h1>
+    </div>
+    <div class="mast-meta">
+      <div>FROM 2,299 RECORDED CALLS</div>
+      <div>1,949 WHERE THE REP ASKED</div>
+      <div>1,080 MEMBER OBJECTIONS READ</div>
+    </div>
+  </header>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>What members actually say when we ask for the appointment</h2>
+      <p>Taken from the member's own words in the transcript — not the disposition the rep selected afterwards. Counted once per call. "Lost" is the share of those calls that ended in a decline rather than a booking.</p>
+    </div>
+    <div class="panel-body" style="overflow-x:auto">
+      <table>
+        <thead><tr><th></th><th>What the member says</th><th>Calls</th><th>Share</th>
+          <th>Booked</th><th>Lost</th><th style="width:140px">How often we lose it</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="callout">
+    <div class="big">92%</div>
+    <div>
+      <p class="lede">"Not interested" is 43% of every objection we hear — and we lose 92% of them.</p>
+      <p>But read what members actually say after those two words. <b>"All I wanted was the golf clubs."</b>
+      <b>"I don't want any instruction, I don't want any videos."</b>
+      <b>"I went through this with somebody the last time about doing all the classes."</b>
+      <b>"I'll call you, don't call me."</b></p>
+      <p>They are not declining a free setup call. They are declining <i>what they think you are about to sell them.</i>
+      The member believes this is another pitch, or a course they're being enrolled in. Every rebuttal below
+      starts by killing that belief before anything else — because if they still think you're selling,
+      nothing else you say lands.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="panel-head" style="border:1px solid var(--line);border-bottom:0;background:var(--surface)">
+      <h2>The rebuttals</h2>
+      <p>Wording follows the Appointment-Setting Script — complimentary, 15 minutes, Golf Advisor, warm transfer first. <em style="font-style:normal;background:var(--orange-soft);padding:1px 4px;font-family:var(--mono);font-size:12px;color:var(--orange-dk)">Highlighted</em> text is the part you must not skip.</p>
+    </div>
+    <div id="objs"></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Five rules that apply to every objection</h2>
+      <p>Measured across all 1,347 booked and declined calls.</p>
+    </div>
+    <div class="rules" id="rules"></div>
+  </section>
+
+  <footer>
+    <p style="margin:0 0 8px"><b>How these were built.</b> Every connected call (talk time ≥ 90 seconds) between 14–21 July 2026 was parsed into rep and member turns. Wherever the rep asked for the appointment, the member's reply was captured and classified from their own wording. 1,949 calls contained a genuine ask; 860 of them (44%) drew at least one objection. Rebuttals are modelled on what reps who <i>won</i> those same objections actually said — every proof call is linked.</p>
+    <p style="margin:0 0 8px"><b>What is already in the script and is not being used.</b> The Appointment-Setting Script already says <code>"I have [Date/Time] — which of those do you prefer?"</code> Only 3% of declined calls contain a rep naming an actual day and clock time, against 48% of booked calls. The single biggest gain available is reps executing the close the script already tells them to use.</p>
+    <p style="margin:0"><b>One honest caveat.</b> On cancellation and refund calls the member is rarely winnable — 92% decline, and pushing risks the CSAT score. Process the refund properly, make one clean offer, and if the answer is no again, let them go.</p>
+  </footer>
+</div>
+
+<script>
+const OBJ = [
+  {rank:1, name:'Flat "not interested"', calls:460, share:42.6, booked:22, lost:92},
+  {rank:2, name:'No time / too busy', calls:252, share:23.3, booked:71, lost:57},
+  {rank:3, name:'Call me later / another day', calls:101, share:9.3, booked:46, lost:32},
+  {rank:4, name:'Wants to cancel / upset', calls:59, share:5.5, booked:3, lost:92},
+  {rank:5, name:'Injured / health', calls:46, share:4.3, booked:10, lost:71},
+  {rank:6, name:'Away / travelling', calls:44, share:4.1, booked:8, lost:65},
+  {rank:7, name:'Already bought / already did it', calls:35, share:3.2, booked:5, lost:75},
+  {rank:8, name:'Product not arrived / back order', calls:21, share:1.9, booked:4, lost:67},
+  {rank:9, name:'Send me the info instead', calls:13, share:1.2, booked:8, lost:20},
+  {rank:10, name:'Cost — "is it free?"', calls:11, share:1.0, booked:5, lost:17},
+  {rank:11, name:'Already has a coach / pro', calls:9, share:0.8, booked:1, lost:83},
+  {rank:12, name:'Doesn\'t want a sales pitch', calls:9, share:0.8, booked:2, lost:67}
+];
+document.getElementById('rows').innerHTML = OBJ.map(o=>`<tr>
+  <td class="rank">${String(o.rank).padStart(2,'0')}</td>
+  <td>${o.name}</td>
+  <td>${o.calls}</td>
+  <td style="color:var(--muted)">${o.share.toFixed(1)}%</td>
+  <td>${o.booked}</td>
+  <td style="color:${o.lost>=80?'var(--orange)':'var(--ink)'};font-weight:600">${o.lost}%</td>
+  <td><span class="bar"><i class="lost" style="width:${o.lost}%"></i></span></td>
+</tr>`).join('');
+
+const CARDS = [
+  {
+    n:1, title:'Flat "not interested"', meta:'460 calls · 43% of all objections · we lose 92%',
+    verbs:['"All I wanted was the golf clubs."',
+           '"I don\'t want any instruction, I don\'t want any videos."',
+           '"I went through this with somebody the last time about doing all the classes."',
+           '"I\'ll call you, don\'t call me."',
+           '"Not interested in buying any of these other lessons."'],
+    means:'They think you are selling. Almost every one of these members mentions <b>buying, lessons, classes or videos</b> — things we never offered them. They are refusing a pitch, not a setup call. Say the words "nobody is selling you anything" out loud, early, and name the product they actually bought.',
+    say:'"Totally fair — and just so you know, <em>nobody\'s selling you anything on this call.</em> You bought the <em>[club / product]</em>. This is the 15-minute setup call that <em>came with it</em> — a Golf Advisor walks you through getting the most out of that <em>[product]</em> specifically. That\'s the whole call. <em>I\'ve got today at 2:40 or tomorrow at 10:20 — which is easier?</em>"',
+    dont:'Don\'t lead with the benefits of the programme, and don\'t say "are you sure?". Reps who answer "not interested" with "you sure you don\'t want a call from one of our top advisors?" almost never recover it — it confirms the member\'s suspicion that they\'re being sold.',
+    proof:{agent:'Agent 33', link:'#',
+      member:'"No, I don\'t know. I don\'t want that. Thank you."',
+      rep:'"Oh, you don\'t want to take advantage of the complimentary 15-minute session, sir? Because basically on the onboarding call, they\'re just going to take a look at your game, give you free advice, especially on how you can use and maximize the 357 so that you\'re working on the right things..."'}
+  },
+  {
+    n:2, title:'No time / too busy', meta:'252 calls · 23% of objections · we lose 57% — and win 71',
+    verbs:['"I don\'t have time today."','"I\'ve been busy lately."',
+           '"I\'ve got a thousand things going on."','"I\'m headed out the door as I speak."',
+           '"I really do have to run."','"I don\'t today, no."'],
+    means:'Almost none of these say <b>never</b> — they say <b>not now</b>. The member is mid-something and cannot give you 15 minutes at this moment. Arguing about now is the mistake. Agree with them instantly, then move the conversation to a future named slot.',
+    say:'"That\'s exactly why I\'m <em>not</em> asking you to do it now — it\'s only 15 minutes and I\'ll put it in for when you\'re actually free. <em>I\'ve got tomorrow at 11:20, or Thursday at 3 — which one\'s easier?</em>"',
+    dont:'Don\'t re-pitch the value of the call. They didn\'t say it wasn\'t valuable, they said they\'re busy. Every extra sentence about the programme makes the call longer, which is the exact thing they just told you they can\'t afford.',
+    proof:{agent:'Agent 36', link:'#',
+      member:'"Actually, I\'m not today because I have doctor\'s appointments here that I\'m getting ready to leave for."',
+      rep:'"Hmm, okay, then we can just reschedule. What\'s your time zone there?" — then went straight to naming slots.'}
+  },
+  {
+    n:3, title:'"Call me later" / "maybe next week"', meta:'101 calls · we lose only 32% — the most winnable objection we have',
+    verbs:['"Maybe tomorrow would be better."','"Yeah, maybe next week."',
+           '"I\'m off on Thursdays and Fridays."','"Put the note down to call me next week."',
+           '"Later would be good."'],
+    means:'This is <b>not a refusal — it is a soft yes with a time attached.</b> The member has already accepted the call and is handing you a window. We still lose a third of these, and the reason is always the same: the rep says "sure, I\'ll call you next week" and never books anything. <b>Never leave this call without a slot.</b>',
+    say:'"Perfect — let\'s lock it in now so you keep the spot, these fill up fast. You said <em>[their window]</em> — I\'ve got <em>[time]</em> or <em>[time]</em> then. Which one do you want?"',
+    dont:'Never accept a vague window. "I\'ll call you next week", "I\'ll make a note", "I\'ll follow up" — all of these lose the member. If they give you a day, get a time. If they give you a time, confirm it back.',
+    proof:{agent:'Agent 36', link:'#',
+      member:'"Um, maybe tomorrow would be better."',
+      rep:'"Okay, what\'s your time zone? Eastern. Okay, let me check my calendar. <b>What time are you available tomorrow?</b>"'}
+  },
+  {
+    n:4, title:'Away / travelling', meta:'44 calls · we lose 65% — almost all recoverable',
+    verbs:['"I\'m out of town."','"Unfortunately I\'m traveling."',
+           '"We\'re actually in Michigan for about 6 weeks."','"I\'m driving and traveling."'],
+    means:'Same shape as "call me later" — a scheduling fact, not a refusal. The only thing standing between this member and a booking is a calendar date after they get home. Ask when they\'re back, then book past it.',
+    say:'"No problem at all — when are you back? ... Great. <em>I\'ve got Thursday or Friday that week, and it\'s only 15 minutes.</em> Which one should I put you down for?"',
+    dont:'Don\'t say "I\'ll try you when you\'re back." That is the same as no. Book the future date on this call.',
+    proof:{agent:'Agent 33', link:'#',
+      member:'"Oh, unfortunately I\'m traveling, so it probably wouldn\'t be a good time."',
+      rep:'"Oh, I see. <b>How about Friday? Because I see here there\'s 2 open appointments, either Thursday or Friday, and again, it\'s only for 15 minutes.</b>"'}
+  },
+  {
+    n:5, title:'Injured / health', meta:'46 calls · we lose 71%',
+    verbs:['"I can\'t swing a golf club because of my surgery."',
+           '"I haven\'t been playing golf lately, so I think this is premature."',
+           '"I have doctor\'s appointments today."',
+           '"When I\'m ready to do it, I\'ll do the onboarding call."'],
+    means:'The member thinks the call requires them to <b>swing</b>. It doesn\'t — it\'s a conversation. The winning frame is that the plan gets built now so it\'s waiting for them the day they\'re cleared to play. Be genuinely respectful here; if the injury is serious, book further out rather than pushing for this week.',
+    say:'"Sorry to hear that — and honestly that\'s the best reason to do it now rather than later. <em>You don\'t swing a club on this call</em>, it\'s just 15 minutes on the phone. The Advisor builds your plan so that the day you\'re cleared to play, you already know exactly what to work on instead of starting from scratch. <em>Would next Tuesday at 2 work, or is later in the month better?</em>"',
+    dont:'Don\'t push for today. Don\'t minimise the injury. If they name a recovery timeline, book past it — that\'s a real booking, not a brush-off.',
+    proof:{agent:'Agent 49', link:'#',
+      member:'"Tomorrow I have doctor\'s appointment. I work in the morning, so that doesn\'t work, but yeah, I have some time today."',
+      rep:'Took the window the member offered and locked the slot immediately rather than negotiating.'}
+  },
+  {
+    n:6, title:'Wants to cancel / upset about a charge', meta:'59 calls · we lose 92% — handle with care',
+    verbs:['"I just want this removed, honestly."','"Cancel everything."',
+           '"I never signed up for any of it."','"Just give me the refund and we\'ll close the issue."'],
+    means:'This member is not in a buying frame and pushing them damages the relationship and your CSAT. <b>Fix the money problem completely first</b> — refund, confirm, set expectations — and only then make <b>one</b> clean offer. If the answer is no a second time, stop. Per the script, never name a product they just cancelled.',
+    say:'"That\'s all sorted — you\'re cancelled and the refund will be back on your statement in 3–5 business days, and you\'ll get the confirmation email today. One last thing before I let you go: you still have the <em>[product they kept]</em>, and there\'s a complimentary 15-minute call with a Golf Advisor that came with it. <em>I\'ve got Monday at 3 or Tuesday at 11.</em> Want me to grab one?"',
+    dont:'Don\'t offer the call before the refund is confirmed. Don\'t ask twice. Don\'t mention the cancelled product by name.',
+    proof:{agent:'Agent 40', link:'#',
+      member:'"But you\'ll cancel that subscription, right?"',
+      rep:'Confirmed the cancellation first, in full — then made a single offer and booked it.'}
+  },
+  {
+    n:7, title:'"Is there a cost?" / "How much is it?"', meta:'11 calls · we lose only 17% — say the word free immediately',
+    verbs:['"How much does that cost?"','"Is there a charge for that?"','"Is it free?"'],
+    means:'This is a <b>buying signal, not an objection.</b> The member is interested and checking for a catch. The only way to lose it is to hesitate or bury the answer.',
+    say:'"<em>Nothing — it\'s completely complimentary.</em> It came free with your purchase, there\'s no card, no charge, nothing to sign up for. It\'s 15 minutes with a Golf Advisor. <em>I\'ve got today at 4:20 or tomorrow at 9:40 — which works?</em>"',
+    dont:'Don\'t say "well, on the call they might show you some options." That turns a buying signal straight back into "not interested".',
+    proof:null
+  }
+];
+
+function esc(s){return String(s??'');}
+document.getElementById('objs').innerHTML = CARDS.map(c=>`
+  <div class="obj">
+    <div class="obj-head">
+      <h3>${String(c.n).padStart(2,'0')} · ${esc(c.title)}</h3>
+      <span class="n">${esc(c.meta)}</span>
+    </div>
+    <div class="obj-body">
+      <p class="sub">What members actually say</p>
+      <div class="verbs">${c.verbs.map(v=>`<span class="verb">${esc(v)}</span>`).join('')}</div>
+      <p class="sub">What it really means</p>
+      <div class="means">${c.means}</div>
+      <div class="say"><div class="say-h">Say this</div><div class="say-b">${c.say}</div></div>
+      <div class="dont"><b>Don't</b>${c.dont}</div>
+      ${c.proof ? `<div class="proof">
+        <span class="who">Proof — ${esc(c.proof.agent)} won this exact objection</span>
+        <q>Member: ${esc(c.proof.member)}</q>
+        <q>Rep: ${c.proof.rep}</q>
+        <a class="listen" href="${esc(c.proof.link)}" target="_blank" rel="noopener">Listen to the call ↗</a>
+      </div>` : ''}
+    </div>
+  </div>`).join('');
+
+const RULES = [
+  ['Rule 01','Name a day and a clock time','Present in 48% of booked calls and 3% of declined ones — a 15.6× difference, and the largest single gap we measured.'],
+  ['Rule 02','Offer two slots, never one','Turns a yes/no question into a which-one question. 36% of booked calls versus 16% of declined.'],
+  ['Rule 03','A "no" means move the slot, not drop the ask','The top reps ask again after the objection. On booked calls that happens 0.24 times per call; on declined calls, 0.09.'],
+  ['Rule 04','Never end on "just let me know"','Appears in half of all calls and predicts nothing — 50% booked versus 48% declined. It feels polite and does no work.'],
+  ['Rule 05','Warm transfer beats booking','The script is right: if an Advisor is free, connect them now. A live transfer cannot no-show.']
+];
+document.getElementById('rules').innerHTML = RULES.map(r=>
+  `<div class="rule"><span class="n">${r[0]}</span><h4>${r[1]}</h4><p>${r[2]}</p></div>`).join('');
+</script>

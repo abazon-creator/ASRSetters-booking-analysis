@@ -263,7 +263,7 @@ const PLAYS = [
    'A choice between two slots changes the question from yes/no to which. Present in 36% of booked calls against 16% of declined.',
    '"Are you available 11:20 or 11:40 today?" … "Which one works better?"'],
   ['Move 03','When they say no, move the slot — not the subject',
-   'Top agents treat a refusal as a scheduling constraint. They acknowledge in one short sentence, then name a different day. Agent 08 was refused three times and booked on the fourth ask.',
+   'Top agents treat a refusal as a scheduling constraint. They acknowledge in one short sentence, then name a different day. Chelei Bago was refused three times and booked on the fourth ask.',
    '"My gosh, you\'re really busy. How about Sunday or Monday?"'],
   ['Move 04','Tie the reason to their own objection',
    'Do not recite benefits. Reflect the objection back as the reason to book. "Too old" becomes "most of our golfers are seniors"; "too busy" becomes "that\'s exactly why a plan matters".',
@@ -315,12 +315,12 @@ function diagnose(n,s,calls){
   const bits=[];
   if(s.spec!=null && s.spec<15) bits.push(`names a specific day and time in only ${s.spec}% of calls, against 48% on booked calls across the floor`);
   if(s.spec!=null && s.spec>=15) bits.push(`names a time in ${s.spec}% of calls but folds once the customer pushes back`);
-  bits.push(`in each call below the customer objected and ${n} never asked for the booking again`);
+  bits.push(`in each call below the customer objected and ${n.split(' ')[0]} never asked for the booking again`);
   return bits.join('; ')+'.';
 }
 function praise(n,s,calls){
   const avg = Math.round(calls.reduce((a,c)=>a+c.closeaft,0)/calls.length*10)/10;
-  return `books at ${s.rate}% and names a specific time in ${s.spec}% of calls; in these calls the customer objected and ${n} asked again — ${avg} more time${avg===1?"":"s"} on average — and won the slot.`;
+  return `books at ${s.rate}% and names a specific time in ${s.spec}% of calls; in these calls the customer objected and ${n.split(' ')[0]} asked again — ${avg} more time${avg===1?"":"s"} on average — and won the slot.`;
 }
 function callHtml(c,kind){
   const label = kind==='coach' ? c.disp.replace(/^F\.\s*/,'') : 'Booked';

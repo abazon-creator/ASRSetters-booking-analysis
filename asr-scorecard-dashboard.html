@@ -1,0 +1,717 @@
+<title>ASR Scorecard â€” Team &amp; Agent</title>
+<style>
+/* ============================================================
+   Performance Golf brand tokens
+   Repro (primary sans) Â· GT Super Text (secondary serif) Â· Repro Mono
+   FD3300 Performance Orange Â· DB2C00 Dark Orange Â· 1D1A1A Black
+   ============================================================ */
+:root{
+  --orange:#FD3300; --orange-dk:#DB2C00;
+  --black:#1D1A1A; --gray:#7B726C; --stone:#B3AAA3;
+  --pebble:#DFD9D5; --sand:#ECE9E4; --fog:#F4F2F0; --mist:#FCFAFA;
+
+  --ground:var(--fog); --surface:var(--mist); --surface-2:var(--sand);
+  --ink:var(--black); --ink-2:#453F3D; --muted:var(--gray);
+  --line:var(--pebble); --line-2:var(--stone);
+  --achieved:var(--black);
+  --gapfill:rgba(253,51,0,.22);
+  --pos:#2E7D46; --pos-soft:rgba(46,125,70,.12);
+  --orange-soft:rgba(253,51,0,.10);
+  --rule:var(--black);
+  --shadow:0 1px 2px rgba(29,26,26,.05), 0 3px 12px rgba(29,26,26,.05);
+
+  --sans:"Repro","Repro Regular","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+  --serif:"GT Super Text","GT Super Display","GT Super",Georgia,"Times New Roman",serif;
+  --mono:"Repro Mono","Repro Monospaced",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --ground:#141111; --surface:#1D1A1A; --surface-2:#262221;
+  --ink:var(--mist); --ink-2:var(--pebble); --muted:var(--stone);
+  --line:#332E2D; --line-2:#453F3D;
+  --achieved:var(--pebble); --gapfill:rgba(253,51,0,.32);
+  --pos:#5FB97C; --pos-soft:rgba(95,185,124,.16);
+  --orange-soft:rgba(253,51,0,.16); --rule:var(--mist);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 3px 12px rgba(0,0,0,.3);}}
+:root[data-theme="dark"]{
+  --ground:#141111; --surface:#1D1A1A; --surface-2:#262221;
+  --ink:var(--mist); --ink-2:var(--pebble); --muted:var(--stone);
+  --line:#332E2D; --line-2:#453F3D;
+  --achieved:var(--pebble); --gapfill:rgba(253,51,0,.32);
+  --pos:#5FB97C; --pos-soft:rgba(95,185,124,.16);
+  --orange-soft:rgba(253,51,0,.16); --rule:var(--mist);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 3px 12px rgba(0,0,0,.3);}
+:root[data-theme="light"]{
+  --ground:var(--fog); --surface:var(--mist); --surface-2:var(--sand);
+  --ink:var(--black); --ink-2:#453F3D; --muted:var(--gray);
+  --line:var(--pebble); --line-2:var(--stone);
+  --achieved:var(--black); --gapfill:rgba(253,51,0,.22);
+  --pos:#2E7D46; --pos-soft:rgba(46,125,70,.12);
+  --orange-soft:rgba(253,51,0,.10); --rule:var(--black);
+  --shadow:0 1px 2px rgba(29,26,26,.05), 0 3px 12px rgba(29,26,26,.05);}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:26px 22px 70px;display:flex;flex-direction:column;gap:24px}
+h1,h2,h3{font-family:var(--serif);font-weight:500;margin:0;text-wrap:balance;letter-spacing:-.005em}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--mono)}
+
+/* ---- site navigation ---- */
+.sitenav{position:sticky;top:0;z-index:50;background:var(--surface);
+  border-bottom:1px solid var(--line);margin:-26px -22px 0;padding:0 22px;
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 26px;backdrop-filter:saturate(1.4) blur(6px)}
+.sitenav-brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  font-weight:500;padding:13px 0;white-space:nowrap}
+.sitenav-brand .brandmark{width:11px;height:11px}
+.sitenav-links{display:flex;flex-wrap:wrap;gap:2px;margin-left:auto}
+.sitenav-links a{text-decoration:none;color:var(--muted);font-size:13px;padding:13px 13px;
+  border-bottom:2px solid transparent;white-space:nowrap}
+.sitenav-links a:hover{color:var(--ink)}
+.sitenav-links a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--orange);font-weight:500}
+.sitenav-links a:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+@media(max-width:640px){.sitenav{gap:0}.sitenav-links{margin-left:0;width:100%;border-top:1px solid var(--line);overflow-x:auto}.sitenav-links a{padding:11px 12px}}
+
+/* ---- masthead ---- */
+.mast{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-end;justify-content:space-between;
+  border-bottom:3px solid var(--orange);padding-bottom:15px}
+.mast h1{font-size:28px;line-height:1.12}
+.brandline{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.brandmark{width:13px;height:13px;background:var(--orange);border-radius:50%;flex:none}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);font-weight:500}
+.mast-meta{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.85;letter-spacing:.02em}
+.mast-meta b{color:var(--ink-2);font-weight:500}
+
+/* ---- controls ---- */
+.controls{display:flex;flex-wrap:wrap;gap:18px 22px;align-items:center;
+  background:var(--surface);border:1px solid var(--line);padding:13px 16px;box-shadow:var(--shadow)}
+.cgroup{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.clabel{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.seg{display:flex;border:1px solid var(--line-2)}
+.seg button{font:inherit;font-size:12.5px;padding:5px 13px;border:0;background:transparent;color:var(--ink-2);cursor:pointer;border-right:1px solid var(--line-2)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--orange);color:var(--mist);font-weight:500}
+.seg button:disabled{opacity:.4;cursor:not-allowed}
+select{font:inherit;font-size:13px;padding:6px 30px 6px 11px;color:var(--ink);background:var(--surface-2);
+  border:1px solid var(--line-2);cursor:pointer;-webkit-appearance:none;appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 15px) 51%,calc(100% - 10px) 51%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+button:focus-visible,input:focus-visible,select:focus-visible,th:focus-visible,[role=button]:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+
+/* ---- hero ---- */
+.headline{background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);padding:22px 26px;
+  display:grid;grid-template-columns:minmax(220px,auto) 1fr;gap:34px;align-items:center}
+.big-wrap{display:flex;flex-direction:column;gap:2px}
+.big{font-size:64px;line-height:.92;font-weight:600;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.big-sub{font-size:12.5px;color:var(--muted);margin-top:6px;max-width:40ch}
+.gap-chip{display:inline-flex;align-self:flex-start;margin-top:11px;padding:5px 11px;font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.02em}
+.gauge{position:relative;display:flex;flex-direction:column;gap:9px;min-width:0;padding-top:18px}
+.gauge-track{position:relative;height:34px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}
+.bar-achieved{position:absolute;left:0;top:0;bottom:0;background:var(--achieved)}
+.bar-gap{position:absolute;top:0;bottom:0;background:var(--gapfill)}
+.gauge-target{position:absolute;top:13px;height:44px;width:2px;background:var(--rule);z-index:2}
+.gauge-target::after{content:"TARGET 40%";position:absolute;left:6px;top:-14px;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--ink);white-space:nowrap}
+.gauge-scale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--muted);letter-spacing:.06em}
+
+/* ---- kpis ---- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.kpi{background:var(--surface);padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.kpi-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.kpi-val{font-size:25px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.025em}
+.kpi-note{font-size:11px;color:var(--muted)}
+
+/* ---- panels ---- */
+.panel{background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden}
+.panel-head{padding:15px 18px 13px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap}
+.panel-head h2{font-size:18px}
+.panel-head p{margin:4px 0 0;font-size:12.5px;color:var(--muted);max-width:70ch}
+.panel-body{padding:18px}
+.trend-legend{display:flex;gap:20px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:10px}
+.trend-legend i{display:inline-block;width:11px;height:11px;margin-right:6px;vertical-align:-1px}
+
+/* ---- scorecard ---- */
+.sc-head{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+.sc-id h3{font-size:24px}
+.sc-id .sub{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin-top:4px}
+.sc-rank{text-align:right;font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.7}
+.sc-rank b{font-family:var(--serif);font-size:22px;color:var(--ink);font-weight:500}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(116px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:18px}
+.tile{background:var(--surface);padding:12px 13px;display:flex;flex-direction:column;gap:2px}
+.tile .k{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tile .v{font-size:21px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.tile .d{font-size:10.5px;color:var(--muted)}
+.sc-trends{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.sc-trend{border:1px solid var(--line);background:var(--surface-2);padding:13px 14px}
+.sc-trend .th{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.sc-trend .th b{font-size:13px;font-weight:500}
+.sc-trend .th span{font-family:var(--mono);font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* ---- table ---- */
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  text-align:right;padding:10px;border-bottom:1px solid var(--line-2);white-space:nowrap;cursor:pointer;
+  user-select:none;background:var(--surface);position:sticky;top:0;z-index:1}
+th:nth-child(2),td:nth-child(2){text-align:left}
+th:first-child,td:first-child{text-align:right;width:34px;color:var(--muted)}
+th:hover{color:var(--ink)}
+th[data-dir]{color:var(--orange)}
+th[data-dir]::after{content:" â–¾";font-size:8px}
+th[data-dir="asc"]::after{content:" â–´"}
+td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;vertical-align:middle}
+tbody tr{cursor:pointer}
+tbody tr:hover td{background:var(--surface-2)}
+.agent-cell{display:flex;flex-direction:column;gap:1px;min-width:170px}
+.agent-cell b{font-weight:500;font-size:13.5px}
+.agent-cell span{font-size:10px;color:var(--muted);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.spark{display:block}
+.empty{padding:26px;text-align:center;color:var(--muted);font-size:13px}
+.pill{display:inline-block;padding:2px 8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;font-weight:500;text-transform:uppercase}
+
+/* ---- teams ---- */
+.teams{display:flex;flex-direction:column}
+.team{display:grid;grid-template-columns:minmax(120px,1.05fr) 70px 1fr minmax(94px,auto);gap:16px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.team:last-child{border-bottom:0}
+.team:hover{background:var(--surface-2)}
+.team[aria-selected="true"]{background:var(--orange-soft);box-shadow:inset 3px 0 0 var(--orange)}
+.team-name{font-weight:500;font-size:14.5px;display:flex;flex-direction:column;gap:2px}
+.team-name span{font-weight:400;font-size:10.5px;color:var(--muted);font-family:var(--mono);letter-spacing:.05em}
+.bar-track{position:relative;height:20px;background:var(--surface-2);border:1px solid var(--line)}
+.bar-target{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--rule);opacity:.8}
+.team-rate{font-size:20px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.team-delta{font-family:var(--mono);font-size:10.5px;text-align:right;color:var(--muted);letter-spacing:.03em}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:820px){.two{grid-template-columns:1fr}.headline{grid-template-columns:1fr;gap:20px}}
+
+footer{font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--line);padding-top:16px}
+footer b{color:var(--ink-2);font-weight:500}
+footer code{font-family:var(--mono);font-size:11px;background:var(--surface-2);padding:1px 5px}
+.note{font-size:11.5px;color:var(--muted);font-family:var(--mono);letter-spacing:.02em}
+@media (prefers-reduced-motion:no-preference){.bar-achieved,.bar-gap{transition:width .35s cubic-bezier(.4,0,.2,1),left .35s cubic-bezier(.4,0,.2,1)}}
+</style>
+
+<div class="wrap">
+  <nav class="sitenav">
+    <a class="sitenav-brand" href="index.html"><span class="brandmark"></span>Performance Golf &middot; ASR Analysis</a>
+    <div class="sitenav-links">
+      <a href="index.html">Overview</a>
+      <a href="asr-scorecard-dashboard.html" aria-current="page">Scorecard</a>
+      <a href="asr-booking-rate-dashboard.html">Booking Rate</a>
+      <a href="asr-call-coaching-pack.html">Coaching</a>
+      <a href="asr-objection-rebuttal-playbook.html">Rebuttals</a>
+    </div>
+  </nav>
+
+  <header class="mast">
+    <div>
+      <div class="brandline"><span class="brandmark"></span><span class="eyebrow">Performance Golf Â· ASR Phone Team</span></div>
+      <h1>Scorecard â€” Team &amp; Agent</h1>
+    </div>
+    <div class="mast-meta">
+      <div>SOURCE Â· <b>ASR Closer Report</b></div>
+      <div>AS OF <b id="m-asof">â€”</b></div>
+      <div id="m-live">SNAPSHOT</div>
+    </div>
+  </header>
+
+  <section class="controls">
+    <div class="cgroup"><span class="clabel">Team</span>
+      <select id="sel-team"></select></div>
+    <div class="cgroup"><span class="clabel">Agent</span>
+      <select id="sel-agent"></select></div>
+    <div class="cgroup"><span class="clabel">View</span>
+      <div class="seg" id="seg-period">
+        <button data-v="daily" aria-pressed="false">Daily</button>
+        <button data-v="weekly" aria-pressed="false">Weekly</button>
+        <button data-v="monthly" aria-pressed="true">Monthly</button>
+      </div></div>
+    <div class="cgroup"><span class="clabel">Trend metric</span>
+      <div class="seg" id="seg-metric"></div></div>
+  </section>
+
+  <section class="headline">
+    <div class="big-wrap">
+      <div class="eyebrow" id="scope-label">Enterprise</div>
+      <div class="big num" id="hero-rate">â€”</div>
+      <div class="big-sub" id="hero-detail"></div>
+      <div class="gap-chip" id="hero-gap"></div>
+    </div>
+    <div class="gauge">
+      <div class="gauge-target" style="left:40%"></div>
+      <div class="gauge-track">
+        <div class="bar-achieved" id="gauge-fill"></div>
+        <div class="bar-gap" id="gauge-gap"></div>
+      </div>
+      <div class="gauge-scale"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
+    </div>
+  </section>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="two">
+    <div class="panel">
+      <div class="panel-head"><div>
+        <h2 id="trend-title">Trend</h2>
+        <p id="trend-sub"></p>
+      </div></div>
+      <div class="panel-body">
+        <div id="trend"></div>
+        <div class="trend-legend" id="trend-legend"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><div>
+        <h2>Teams</h2>
+        <p>Month-to-date booking rate by team â€” Sets Ã· 90-sec calls, against the 40% target. Click a team to filter.</p>
+      </div></div>
+      <div class="panel-body"><div class="teams" id="teams"></div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="detail-panel">
+    <div class="panel-head"><div>
+      <h2 id="detail-title">Agent leaderboard</h2>
+      <p id="detail-sub"></p>
+    </div></div>
+    <div class="panel-body" id="detail-body"></div>
+  </section>
+
+  <footer>
+    <p style="margin:0 0 8px"><b>What the numbers mean.</b>
+      <b>Sets</b> â€” bookings counted by booking date. <b>Appointments</b> â€” scheduled appointments by appointment date, minus cancellations.
+      <b>Booking Rate</b> = Sets Ã· 90-sec calls (target 40%). <b>Show Rate</b> = Shows Ã· Appointments.
+      <b>Close Rate</b> = Closed deals with upfront revenue Ã· Shows.</p>
+    <p style="margin:0 0 8px"><b>Scope.</b> Agent and team cards show <b>month-to-date (August)</b> standings from the Closer Report roster.
+      The trend chart and sparklines show the selected metric across <b>Jun/Jul/Aug (monthly)</b>, week-beginning weeks, and the last ten days.
+      Booking-rate and count trends come from the report's per-rep matrices; Support and Team Philip are internal-setter groups the Executive Summary does not trend.</p>
+    <p style="margin:0" id="refresh-note"></p>
+  </footer>
+</div>
+
+<script id="embedded-data" type="application/json">{"meta":{"source":"ASR - Closer Report","sheetId":"1pcsC28bwL0_5S0oa65LHXHJTRgNFT4rO-bqpszvDmD8","asOf":"2026-08-11","generated":"2026-08-12"},"periods":{"monthly":["Jun","Jul","Aug"],"weekly":["WB 07/06","WB 07/13","WB 07/20","WB 07/27","WB 08/03","WB 08/10"],"daily":["08/02","08/03","08/04","08/05","08/06","08/07","08/08","08/09","08/10","08/11"]},"sections":{"ASRs":{"sets":{"monthly":[556,3619,1890],"weekly":[328,653,1128,1463,1232,599],"daily":[15,208,237,285,227,244,19,12,320,279]},"appts":{"monthly":[526,2900,2117],"weekly":[236,664,860,1111,1226,837],"daily":[17,209,224,231,234,215,87,26,254,273]},"shows":{"monthly":[278,1991,1186],"weekly":[123,482,586,790,796,358],"daily":[11,137,146,161,158,130,51,13,171,176]},"showRate":{"monthly":[52.85,68.66,56.02],"weekly":[52.12,72.59,68.14,71.11,64.93,42.77],"daily":[64.71,65.55,65.18,69.7,67.52,60.47,58.62,50,67.32,64.47]},"closed":{"monthly":[79,568,404],"weekly":[21,123,193,239,250,137],"daily":[5,48,48,51,46,35,17,5,61,72]},"revenue":{"monthly":[33588,194448,115467],"weekly":[6546,47861,63643,78845,71956,37090],"daily":[2072,14394,13798,15864,14171,9576,2570,1583,16511,19808]},"calls90":{"monthly":[0,9808,4900],"weekly":[842,2030,2981,3879,3295,1431],"daily":[59,745,659,696,593,506,68,28,808,623]},"inbound90":{"monthly":[0,4687,2184],"weekly":[371,1351,1347,1671,1400,651],"daily":[46,322,269,306,269,173,44,17,365,286]},"outbound90":{"monthly":[0,5121,2716],"weekly":[471,679,1634,2208,1895,780],"daily":[13,423,390,390,324,333,24,11,443,337]},"bookingRate":{"monthly":[null,36.9,38.57],"weekly":[38.95,32.17,37.84,37.72,37.39,41.86],"daily":[25.42,27.92,35.96,40.95,38.28,48.22,27.94,42.86,39.6,44.78]}},"Team Mark":{"sets":{"monthly":[0,905,658],"weekly":[59,236,261,349,439,219],"daily":[0,57,94,92,94,98,4,0,104,115]},"appts":{"monthly":[0,787,724],"weekly":[73,276,205,250,377,330],"daily":[3,47,71,71,61,90,28,9,97,116]},"shows":{"monthly":[0,549,393],"weekly":[39,198,145,175,244,141],"daily":[0,36,45,49,43,52,15,4,55,82]},"showRate":{"monthly":[null,69.76,54.28],"weekly":[53.42,71.74,70.73,70,64.72,42.73],"daily":[0,76.6,63.38,69.01,70.49,57.78,53.57,44.44,56.7,70.69]},"closed":{"monthly":[0,150,115],"weekly":[5,59,45,44,64,48],"daily":[0,12,14,12,11,12,3,0,18,28]},"revenue":{"monthly":[0,54131,30001],"weekly":[2539,22807,14028,15940,16424,12393],"daily":[0,2504,4488,3653,2317,2806,656,0,4119,7876]},"calls90":{"monthly":[0,2323,1670],"weekly":[105,579,667,972,1128,542],"daily":[0,247,213,222,227,203,16,0,277,265]},"inbound90":{"monthly":[0,341,595],"weekly":[21,65,66,189,364,231],"daily":[0,60,64,68,89,78,5,0,105,126]},"outbound90":{"monthly":[0,1982,1075],"weekly":[84,514,601,783,764,311],"daily":[0,187,149,154,138,125,11,0,172,139]},"bookingRate":{"monthly":[null,38.96,39.4],"weekly":[56.19,40.76,39.13,35.91,38.92,40.41],"daily":[null,23.08,44.13,41.44,41.41,48.28,25,null,37.55,43.4]}},"Team Mimi":{"sets":{"monthly":[0,1044,454],"weekly":[30,170,417,475,275,131],"daily":[11,73,46,56,35,54,7,4,79,52]},"appts":{"monthly":[0,850,475],"weekly":[4,164,296,402,287,171],"daily":[4,72,40,54,44,47,25,5,55,48]},"shows":{"monthly":[0,607,291],"weekly":[4,120,200,296,200,77],"daily":[4,46,32,39,29,32,18,4,42,32]},"showRate":{"monthly":[null,71.41,61.26],"weekly":[100,73.17,67.57,73.63,69.69,45.03],"daily":[100,63.89,80,72.22,65.91,68.09,72,80,76.36,66.67]},"closed":{"monthly":[0,200,105],"weekly":[2,27,81,99,67,28],"daily":[2,17,7,14,10,8,7,4,12,16]},"revenue":{"monthly":[0,70378,27671],"weekly":[552,10465,30426,31880,17921,6606],"daily":[629,5004,1690,4780,2666,2044,901,836,2835,3771]},"calls90":{"monthly":[0,3126,1264],"weekly":[202,622,1093,1345,796,332],"daily":[42,237,164,139,107,126,16,7,198,134]},"inbound90":{"monthly":[0,2070,607],"weekly":[164,582,659,767,352,153],"daily":[30,128,73,64,42,29,14,2,91,62]},"outbound90":{"monthly":[0,1056,657],"weekly":[38,40,434,578,444,179],"daily":[12,109,91,75,65,97,2,5,107,72]},"bookingRate":{"monthly":[null,33.4,35.92],"weekly":[14.85,27.33,38.15,35.32,34.55,39.46],"daily":[26.19,30.8,28.05,40.29,32.71,42.86,43.75,57.14,39.9,38.81]}},"Team Remen":{"sets":{"monthly":[0,1265,754],"weekly":[16,222,420,618,499,244],"daily":[4,77,94,127,94,91,8,8,132,112]},"appts":{"monthly":[1,966,836],"weekly":[6,203,332,440,491,330],"daily":[8,84,96,90,105,73,31,12,98,108]},"shows":{"monthly":[1,679,461],"weekly":[5,147,227,308,317,136],"daily":[6,53,60,65,74,44,16,5,71,61]},"showRate":{"monthly":[100,70.29,55.14],"weekly":[83.33,72.41,68.37,70,64.56,41.21],"daily":[75,63.1,62.5,72.22,70.48,60.27,51.61,41.67,72.45,56.48]},"closed":{"monthly":[1,185,171],"weekly":[0,34,63,91,108,60],"daily":[3,18,25,20,23,14,7,1,30,28]},"revenue":{"monthly":[179,56832,54293],"weekly":[0,13002,16842,28432,34787,18063],"daily":[1443,6661,7173,5802,8790,4601,1013,747,9528,8162]},"calls90":{"monthly":[0,3593,1872],"weekly":[115,816,1197,1503,1291,543],"daily":[17,256,267,288,247,176,36,21,319,224]},"inbound90":{"monthly":[0,2026,902],"weekly":[92,698,605,662,616,255],"daily":[16,126,125,132,128,65,25,15,157,98]},"outbound90":{"monthly":[0,1567,970],"weekly":[23,118,592,841,675,288],"daily":[1,130,142,156,119,111,11,6,162,126]},"bookingRate":{"monthly":[null,35.21,40.28],"weekly":[13.91,27.21,35.09,41.12,38.65,44.94],"daily":[23.53,30.08,35.21,44.1,38.06,51.7,22.22,38.1,41.38,50]}}},"agents":[{"name":"Romalyn Magallon","team":"Team Remen","cur":{"sets":90,"appts":85,"show":45,"noShow":16,"calls90":196,"bookingRate":45.92,"showRate":52.94,"closeRate":46.67,"revenue":7990.8,"ibPct":58.82,"obPct":0},"trend":{"sets":{"monthly":[0,121,90],"weekly":[3,17,36,65,73,17],"daily":[0,13,14,18,15,11,0,2,9,8]},"shows":{"monthly":[0,65,45],"weekly":[3,11,22,29,34,11],"daily":[0,7,6,6,9,5,1,0,6,5]},"bookingRate":{"monthly":[null,42,46],"weekly":[38,27,41,49,48,38],"daily":[null,43,47,50,43,61,null,100,35,42]}}},{"name":"Martin Lorenzo Savellano","team":"Team Remen","cur":{"sets":78,"appts":78,"show":48,"noShow":13,"calls90":207,"bookingRate":37.68,"showRate":61.54,"closeRate":41.67,"revenue":6301.2,"ibPct":30.97,"obPct":57.69},"trend":{"sets":{"monthly":[0,103,78],"weekly":[0,27,26,50,50,28],"daily":[0,8,8,15,11,8,0,0,17,11]},"shows":{"monthly":[1,54,48],"weekly":[0,16,15,25,32,14],"daily":[1,6,3,5,10,6,1,1,8,6]},"bookingRate":{"monthly":[null,41,38],"weekly":[0,35,39,48,34,45],"daily":[null,28,26,44,34,42,null,null,46,44]}}},{"name":"Alex Edem","team":"Team Remen","cur":{"sets":74,"appts":80,"show":46,"noShow":10,"calls90":137,"bookingRate":54.01,"showRate":57.5,"closeRate":45.65,"revenue":6948.75,"ibPct":44.19,"obPct":58.51},"trend":{"sets":{"monthly":[0,93,74],"weekly":[1,14,34,44,50,24],"daily":[0,7,9,8,15,11,0,0,13,11]},"shows":{"monthly":[0,53,46],"weekly":[0,8,22,23,34,12],"daily":[0,2,8,6,14,3,0,1,10,1]},"bookingRate":{"monthly":[null,35,54],"weekly":[8,27,33,44,50,65],"daily":[null,39,43,44,71,50,null,null,65,65]}}},{"name":"Dexter Cagas Arbas","team":"Team Remen","cur":{"sets":68,"appts":74,"show":39,"noShow":5,"calls90":175,"bookingRate":38.86,"showRate":52.7,"closeRate":33.33,"revenue":3550.2,"ibPct":27.91,"obPct":42.42},"trend":{"sets":{"monthly":[0,61,68],"weekly":[0,14,14,33,39,29],"daily":[0,8,6,9,6,8,2,0,14,15]},"shows":{"monthly":[0,31,39],"weekly":[0,10,5,16,27,12],"daily":[0,5,6,4,3,5,4,0,6,6]},"bookingRate":{"monthly":[null,27,39],"weekly":[0,27,21,33,34,48],"daily":[null,32,26,41,33,47,20,null,45,52]}}},{"name":"Thomas John Lommen","team":"Team Remen","cur":{"sets":66,"appts":75,"show":44,"noShow":16,"calls90":147,"bookingRate":44.9,"showRate":58.67,"closeRate":31.82,"revenue":3990.7,"ibPct":34.52,"obPct":58.73},"trend":{"sets":{"monthly":[0,80,66],"weekly":[2,15,28,41,37,23],"daily":[0,5,15,12,0,0,3,2,18,5]},"shows":{"monthly":[0,35,44],"weekly":[0,10,16,9,31,13],"daily":[0,6,6,2,6,5,4,2,7,5]},"bookingRate":{"monthly":[null,31,45],"weekly":[10,17,34,46,47,52],"daily":[0,45,44,60,null,null,33,40,55,45]}}},{"name":"Mayzelyn Revuelto","team":"Team Remen","cur":{"sets":66,"appts":79,"show":44,"noShow":13,"calls90":161,"bookingRate":40.99,"showRate":55.7,"closeRate":34.09,"revenue":5639.8,"ibPct":21.62,"obPct":57.47},"trend":{"sets":{"monthly":[0,102,66],"weekly":[0,18,34,50,44,22],"daily":[0,8,11,9,9,7,0,0,12,10]},"shows":{"monthly":[0,57,44],"weekly":[0,16,15,28,27,15],"daily":[1,6,5,5,5,6,0,0,8,7]},"bookingRate":{"monthly":[null,31,41],"weekly":[0,23,34,35,40,43],"daily":[null,29,61,33,38,54,null,null,35,59]}}},{"name":"Marc Bryan Paguinto","team":"Team Remen","cur":{"sets":64,"appts":82,"show":36,"noShow":19,"calls90":116,"bookingRate":55.17,"showRate":43.9,"closeRate":16.67,"revenue":824,"ibPct":6.67,"obPct":62.38},"trend":{"sets":{"monthly":[0,103,64],"weekly":[0,12,29,62,45,19],"daily":[0,7,7,12,8,11,0,0,9,10]},"shows":{"monthly":[0,41,36],"weekly":[0,8,11,22,29,7],"daily":[0,5,5,6,4,4,5,0,4,3]},"bookingRate":{"monthly":[null,44,55],"weekly":[0,27,35,63,57,51],"daily":[null,35,50,63,62,85,null,null,45,59]}}},{"name":"Sitti Besas","team":"Team Remen","cur":{"sets":56,"appts":61,"show":39,"noShow":11,"calls90":205,"bookingRate":27.32,"showRate":63.93,"closeRate":48.72,"revenue":5123.32,"ibPct":24.82,"obPct":32.81},"trend":{"sets":{"monthly":[0,33,56],"weekly":[4,1,0,33,30,21],"daily":[4,3,4,10,7,3,2,1,11,10]},"shows":{"monthly":[0,13,39],"weekly":[2,1,0,13,21,15],"daily":[3,2,3,7,5,4,0,0,4,10]}}},{"name":"Omar Abdallah Mahmoud","team":"Team Remen","cur":{"sets":52,"appts":66,"show":34,"noShow":13,"calls90":124,"bookingRate":41.94,"showRate":51.52,"closeRate":38.24,"revenue":3605.2,"ibPct":30,"obPct":42.98},"trend":{"sets":{"monthly":[0,76,52],"weekly":[3,5,19,49,36,16],"daily":[0,7,5,7,6,9,0,2,6,10]},"shows":{"monthly":[0,43,34],"weekly":[1,6,14,22,22,12],"daily":[0,4,5,7,4,1,0,1,5,7]},"bookingRate":{"monthly":[null,42,42],"weekly":[38,29,37,48,41,43],"daily":[null,35,33,44,38,56,null,50,29,63]}}},{"name":"Alvin Alan Comia","team":"Team Remen","cur":{"sets":51,"appts":57,"show":27,"noShow":13,"calls90":180,"bookingRate":28.33,"showRate":47.37,"closeRate":40.74,"revenue":4343,"ibPct":22.14,"obPct":44.9},"trend":{"sets":{"monthly":[0,91,51],"weekly":[0,13,38,40,34,17],"daily":[0,3,6,5,8,12,0,0,9,8]},"shows":{"monthly":[0,56,27],"weekly":[0,7,19,30,18,9],"daily":[0,3,6,3,3,3,0,0,6,3]}}},{"name":"Abet Belano","team":"Team Remen","cur":{"sets":51,"appts":63,"show":42,"noShow":8,"calls90":143,"bookingRate":35.66,"showRate":66.67,"closeRate":33.33,"revenue":4888.71,"ibPct":33.33,"obPct":36.36},"trend":{"sets":{"monthly":[0,67,51],"weekly":[0,6,24,37,34,17],"daily":[0,6,4,12,4,7,1,0,8,9]},"shows":{"monthly":[0,29,42],"weekly":[0,5,10,14,30,12],"daily":[0,5,5,10,8,1,1,0,6,5]}}},{"name":"Tommy Tecson","team":"Team Remen","cur":{"sets":31,"appts":26,"show":13,"noShow":4,"calls90":81,"bookingRate":38.27,"showRate":50,"closeRate":23.08,"revenue":888.4,"ibPct":15,"obPct":45.9},"trend":{"sets":{"monthly":[0,1,31],"weekly":[0,0,0,1,20,11],"daily":[0,0,4,7,4,4,0,1,6,5]},"shows":{"monthly":[0,0,13],"weekly":[0,0,0,0,9,4],"daily":[0,1,2,3,2,1,0,0,1,3]},"bookingRate":{"monthly":[null,null,38],"weekly":[null,null,null,null,38,39],"daily":[null,null,44,44,44,36,null,13,30,63]}}},{"name":"Kim Paolo B. Planas","team":"Team Mark","cur":{"sets":84,"appts":88,"show":54,"noShow":19,"calls90":223,"bookingRate":37.67,"showRate":61.36,"closeRate":22.22,"revenue":3058.15,"ibPct":34.07,"obPct":40.15},"trend":{"sets":{"monthly":[131,177,84],"weekly":[58,39,27,32,62,22],"daily":[0,10,10,11,12,15,4,0,10,12]},"shows":{"monthly":[67,105,54],"weekly":[27,39,17,19,34,18],"daily":[0,5,7,6,7,7,1,1,4,14]},"bookingRate":{"monthly":[null,40,38],"weekly":[45,47,45,32,41,31],"daily":[null,33,36,37,50,58,31,null,26,36]}}},{"name":"Carlo Palma","team":"Team Mark","cur":{"sets":84,"appts":89,"show":41,"noShow":20,"calls90":171,"bookingRate":49.12,"showRate":46.07,"closeRate":31.71,"revenue":4583.8,"ibPct":26.67,"obPct":61.26},"trend":{"sets":{"monthly":[88,105,84],"weekly":[43,14,8,32,58,26],"daily":[0,12,15,12,12,7,0,0,13,13]},"shows":{"monthly":[38,39,41],"weekly":[11,14,2,10,27,12],"daily":[0,7,3,5,4,8,0,0,6,5]},"bookingRate":{"monthly":[null,49,49],"weekly":[72,44,40,36,50,47],"daily":[null,48,65,40,63,37,null,null,46,48]}}},{"name":"Gerome Maca","team":"Team Mark","cur":{"sets":67,"appts":76,"show":40,"noShow":14,"calls90":187,"bookingRate":35.83,"showRate":52.63,"closeRate":40,"revenue":3661,"ibPct":18.57,"obPct":46.15},"trend":{"sets":{"monthly":[7,159,67],"weekly":[41,31,29,44,44,23],"daily":[0,5,9,10,10,10,0,0,12,11]},"shows":{"monthly":[0,90,40],"weekly":[20,27,17,16,24,16],"daily":[0,5,5,4,3,4,3,0,6,10]}}},{"name":"Marwin Ray Reyes","team":"Team Mark","cur":{"sets":65,"appts":70,"show":33,"noShow":15,"calls90":103,"bookingRate":63.11,"showRate":47.14,"closeRate":18.18,"revenue":1459.1,"ibPct":14.29,"obPct":66.67},"trend":{"sets":{"monthly":[142,172,65],"weekly":[39,35,43,29,43,22],"daily":[0,6,7,9,9,12,0,0,11,11]},"shows":{"monthly":[67,88,33],"weekly":[12,23,23,20,20,13],"daily":[0,3,1,2,5,7,2,0,2,11]},"bookingRate":{"monthly":[null,69,63],"weekly":[71,78,64,62,61,69],"daily":[null,46,54,60,69,75,0,null,73,65]}}},{"name":"Emmanuella Frago","team":"Team Mark","cur":{"sets":58,"appts":62,"show":37,"noShow":6,"calls90":122,"bookingRate":47.54,"showRate":59.68,"closeRate":21.62,"revenue":1827.65,"ibPct":19.05,"obPct":53.47},"trend":{"sets":{"monthly":[95,120,58],"weekly":[43,15,22,25,37,21],"daily":[0,4,11,6,5,11,0,0,9,12]},"shows":{"monthly":[44,65,37],"weekly":[16,24,13,9,18,18],"daily":[0,2,7,5,1,3,0,0,7,10]},"bookingRate":{"monthly":[null,48,48],"weekly":[72,43,51,34,46,51],"daily":[null,36,52,40,29,65,null,null,45,57]}}},{"name":"Jackie Ramos","team":"Team Mark","cur":{"sets":56,"appts":61,"show":33,"noShow":10,"calls90":168,"bookingRate":33.33,"showRate":54.1,"closeRate":63.64,"revenue":4732.4,"ibPct":24.36,"obPct":41.11},"trend":{"sets":{"monthly":[0,59,56],"weekly":[0,8,27,24,39,17],"daily":[0,6,6,8,8,11,0,0,8,9]},"shows":{"monthly":[0,34,33],"weekly":[0,4,13,17,20,13],"daily":[0,4,4,3,5,4,0,0,6,6]}}},{"name":"Kristal Joy Bundalian","team":"Team Mark","cur":{"sets":53,"appts":62,"show":36,"noShow":10,"calls90":156,"bookingRate":33.97,"showRate":58.06,"closeRate":27.78,"revenue":2580.2,"ibPct":0,"obPct":67.95},"trend":{"sets":{"monthly":[0,69,53],"weekly":[0,7,27,35,41,12],"daily":[0,4,14,9,5,9,0,0,4,8]},"shows":{"monthly":[0,41,36],"weekly":[0,6,17,20,26,8],"daily":[0,3,4,5,5,8,0,1,2,6]}}},{"name":"Gabriella Abem","team":"Team Mark","cur":{"sets":52,"appts":53,"show":32,"noShow":5,"calls90":142,"bookingRate":36.62,"showRate":60.38,"closeRate":15.63,"revenue":1808,"ibPct":0,"obPct":42.98},"trend":{"sets":{"monthly":[93,109,52],"weekly":[34,19,22,19,37,15],"daily":[0,4,7,8,11,7,0,0,6,9]},"shows":{"monthly":[61,63,32],"weekly":[15,17,10,13,21,11],"daily":[0,3,3,8,4,3,0,0,8,3]}}},{"name":"Homaboroma OrluOrlu","team":"Team Mark","cur":{"sets":49,"appts":54,"show":36,"noShow":4,"calls90":179,"bookingRate":27.37,"showRate":66.67,"closeRate":33.33,"revenue":2813.71,"ibPct":23.62,"obPct":36.54},"trend":{"sets":{"monthly":[0,10,49],"weekly":[0,0,0,10,26,23],"daily":[0,0,4,0,11,11,0,0,12,11]},"shows":{"monthly":[0,1,36],"weekly":[0,0,0,1,19,17],"daily":[0,0,0,7,5,6,1,0,8,9]}}},{"name":"Nicolo Gerard C. Gonzalez","team":"Team Mark","cur":{"sets":47,"appts":57,"show":22,"noShow":12,"calls90":93,"bookingRate":50.54,"showRate":38.6,"closeRate":18.18,"revenue":1025,"ibPct":0,"obPct":58.02},"trend":{"sets":{"monthly":[0,64,47],"weekly":[0,20,15,29,24,23],"daily":[0,2,6,10,6,0,0,0,12,11]},"shows":{"monthly":[0,26,22],"weekly":[0,10,7,9,18,4],"daily":[0,3,3,1,3,1,6,1,2,2]},"bookingRate":{"monthly":[null,41,51],"weekly":[null,45,27,50,41,66],"daily":[null,11,75,67,35,null,null,null,60,73]}}},{"name":"Emmanuel Sandoval","team":"Team Mark","cur":{"sets":39,"appts":43,"show":24,"noShow":8,"calls90":105,"bookingRate":37.14,"showRate":55.81,"closeRate":20.83,"revenue":1564.1,"ibPct":13.79,"obPct":46.05},"trend":{"sets":{"monthly":[0,102,39],"weekly":[23,16,17,39,24,15],"daily":[0,2,3,9,5,5,0,0,7,8]},"shows":{"monthly":[0,55,24],"weekly":[12,14,8,22,12,11],"daily":[0,1,3,3,1,1,2,1,4,6]},"bookingRate":{"monthly":[null,42,37],"weekly":[46,37,39,42,39,34],"daily":[null,13,50,64,36,45,null,null,29,40]}}},{"name":"Maria Charla Pedrigal","team":"Team Mark","cur":{"sets":4,"appts":9,"show":5,"noShow":2,"calls90":21,"bookingRate":19.05,"showRate":55.56,"closeRate":60,"revenue":887.6,"ibPct":0,"obPct":20},"trend":{}},{"name":"Asmaa Hisham","team":"Team Mark","cur":{"sets":0,"appts":0,"show":0,"noShow":0,"calls90":0,"bookingRate":null,"showRate":null,"closeRate":null,"revenue":0,"ibPct":null,"obPct":null},"trend":{"sets":{"monthly":[0,0,0],"weekly":[0,0,0,0,0,0],"daily":[0,0,0,0,0,0,0,0,0,0]},"shows":{"monthly":[0,0,0],"weekly":[0,0,0,0,0,0],"daily":[0,0,0,0,0,0,0,0,0,0]}}},{"name":"Charlyn Baylon","team":"Team Mimi","cur":{"sets":81,"appts":89,"show":61,"noShow":7,"calls90":225,"bookingRate":36,"showRate":68.54,"closeRate":34.43,"revenue":5844.5,"ibPct":25.24,"obPct":45.08},"trend":{"sets":{"monthly":[0,84,81],"weekly":[0,13,42,29,55,26],"daily":[0,13,8,12,8,14,0,0,15,11]},"shows":{"monthly":[0,41,61],"weekly":[0,8,16,17,46,15],"daily":[0,10,6,10,6,11,3,0,8,6]}}},{"name":"Melody Tubio Libradilla","team":"Team Mimi","cur":{"sets":65,"appts":70,"show":50,"noShow":9,"calls90":162,"bookingRate":40.12,"showRate":71.43,"closeRate":20,"revenue":1970.2,"ibPct":18.97,"obPct":51.92},"trend":{"sets":{"monthly":[0,68,65],"weekly":[2,10,27,29,52,13],"daily":[0,9,9,15,8,11,0,0,13,0]},"shows":{"monthly":[0,36,50],"weekly":[0,10,12,14,39,11],"daily":[0,3,10,10,7,7,2,0,7,4]},"bookingRate":{"monthly":[null,30,40],"weekly":[15,25,30,33,40,41],"daily":[null,31,33,58,33,46,null,null,41,null]}}},{"name":"Jacinto Jr Basada","team":"Team Mimi","cur":{"sets":63,"appts":60,"show":41,"noShow":5,"calls90":177,"bookingRate":35.59,"showRate":68.33,"closeRate":53.66,"revenue":7306.5,"ibPct":38.82,"obPct":32.61},"trend":{"sets":{"monthly":[0,57,63],"weekly":[3,12,14,45,29,17],"daily":[5,7,9,8,1,0,3,1,8,9]},"shows":{"monthly":[0,41,41],"weekly":[1,7,11,25,30,8],"daily":[1,7,4,5,6,3,4,1,5,3]}}},{"name":"Rheena Jayne Tomakin","team":"Team Mimi","cur":{"sets":55,"appts":62,"show":33,"noShow":9,"calls90":133,"bookingRate":41.35,"showRate":53.23,"closeRate":45.45,"revenue":2673.5,"ibPct":2.22,"obPct":61.36},"trend":{"sets":{"monthly":[0,73,55],"weekly":[0,16,32,30,34,16],"daily":[1,4,3,7,3,10,4,3,5,11]},"shows":{"monthly":[0,40,33],"weekly":[0,9,18,13,24,9],"daily":[0,2,3,7,3,1,5,3,2,7]},"bookingRate":{"monthly":[null,35,41],"weekly":[0,27,42,41,45,40],"daily":[25,44,23,54,50,45,44,75,25,55]}}},{"name":"Lucky Sardia","team":"Team Mimi","cur":{"sets":43,"appts":46,"show":29,"noShow":6,"calls90":129,"bookingRate":33.33,"showRate":63.04,"closeRate":17.24,"revenue":1414.15,"ibPct":25,"obPct":45.28},"trend":{"sets":{"monthly":[0,103,43],"weekly":[6,27,28,42,31,12],"daily":[0,4,7,8,4,8,0,0,12,0]},"shows":{"monthly":[0,66,29],"weekly":[0,19,16,30,20,9],"daily":[0,5,3,1,3,6,2,0,8,1]}}},{"name":"Micha Aborquez","team":"Team Mimi","cur":{"sets":42,"appts":49,"show":24,"noShow":10,"calls90":140,"bookingRate":30,"showRate":48.98,"closeRate":50,"revenue":4211.81,"ibPct":25.35,"obPct":34.78},"trend":{"sets":{"monthly":[0,101,42],"weekly":[0,13,35,53,28,14],"daily":[0,7,5,6,5,5,0,0,10,4]},"shows":{"monthly":[0,51,24],"weekly":[0,8,13,30,18,6],"daily":[0,4,3,4,4,2,1,0,2,3]}}},{"name":"Audrey Banares","team":"Team Mimi","cur":{"sets":42,"appts":53,"show":24,"noShow":7,"calls90":84,"bookingRate":50,"showRate":45.28,"closeRate":29.17,"revenue":1301.3,"ibPct":28.26,"obPct":76.32},"trend":{"sets":{"monthly":[0,116,42],"weekly":[5,17,51,50,10,25],"daily":[0,9,0,0,0,1,0,0,16,9]},"shows":{"monthly":[0,65,24],"weekly":[0,13,23,31,11,11],"daily":[0,3,4,1,3,0,0,0,7,3]},"bookingRate":{"monthly":[null,40,50],"weekly":[19,44,48,36,45,54],"daily":[null,41,null,null,null,null,null,null,64,43]}}},{"name":"Jho-May Acosta","team":"Team Mimi","cur":{"sets":30,"appts":36,"show":20,"noShow":6,"calls90":95,"bookingRate":31.58,"showRate":55.56,"closeRate":30,"revenue":1082.29,"ibPct":23.68,"obPct":36.84},"trend":{"sets":{"monthly":[0,54,30],"weekly":[0,7,20,27,22,8],"daily":[0,5,5,0,6,6,0,0,0,8]},"shows":{"monthly":[0,30,20],"weekly":[0,5,10,15,12,8],"daily":[0,5,3,1,0,2,1,0,3,5]}}},{"name":"Kikumi Keeshia Matsuo","team":"Team Mimi","cur":{"sets":2,"appts":7,"show":3,"noShow":2,"calls90":4,"bookingRate":50,"showRate":42.86,"closeRate":33.33,"revenue":29,"ibPct":100,"obPct":33.33},"trend":{}},{"name":"Monette Soltes","team":"Team Mimi","cur":{"sets":0,"appts":0,"show":0,"noShow":0,"calls90":0,"bookingRate":null,"showRate":null,"closeRate":null,"revenue":0,"ibPct":null,"obPct":null},"trend":{"sets":{"monthly":[0,0,0],"weekly":[0,0,0,0,0,0],"daily":[0,0,0,0,0,0,0,0,0,0]},"shows":{"monthly":[0,0,0],"weekly":[0,0,0,0,0,0],"daily":[0,0,0,0,0,0,0,0,0,0]}}},{"name":"Diana San Juan","team":"Team Mimi","cur":{"sets":0,"appts":0,"show":0,"noShow":0,"calls90":0,"bookingRate":null,"showRate":null,"closeRate":null,"revenue":0,"ibPct":null,"obPct":null},"trend":{"sets":{"monthly":[0,0,0],"weekly":[0,0,0,0,0,0],"daily":[0,0,0,0,0,0,0,0,0,0]},"shows":{"monthly":[0,0,0],"weekly":[0,0,0,0,0,0],"daily":[0,0,0,0,0,0,0,0,0,0]}}},{"name":"Marie Rose CaÃ±ada","team":"Support","cur":{"sets":11,"appts":11,"show":5,"noShow":2,"calls90":33,"bookingRate":33.33,"showRate":45.45,"closeRate":20,"revenue":239.2,"ibPct":19.05,"obPct":58.33},"trend":{}},{"name":"Mark Donan","team":"Support","cur":{"sets":4,"appts":4,"show":4,"noShow":0,"calls90":21,"bookingRate":19.05,"showRate":100,"closeRate":50,"revenue":324,"ibPct":18.18,"obPct":0},"trend":{}},{"name":"Carmelyn Luna","team":"Support","cur":{"sets":4,"appts":7,"show":5,"noShow":1,"calls90":22,"bookingRate":18.18,"showRate":71.43,"closeRate":40,"revenue":782.4,"ibPct":20,"obPct":0},"trend":{}},{"name":"Remen Po","team":"Support","cur":{"sets":3,"appts":2,"show":1,"noShow":0,"calls90":18,"bookingRate":16.67,"showRate":50,"closeRate":0,"revenue":0,"ibPct":17.65,"obPct":0},"trend":{}},{"name":"Philip Josh Caperig","team":"Support","cur":{"sets":0,"appts":0,"show":0,"noShow":0,"calls90":0,"bookingRate":null,"showRate":null,"closeRate":null,"revenue":0,"ibPct":null,"obPct":null},"trend":{}},{"name":"Jessika Elliott","team":"Team Philip","cur":{"sets":1,"appts":1,"show":1,"noShow":0,"calls90":0,"bookingRate":null,"showRate":100,"closeRate":100,"revenue":29,"ibPct":null,"obPct":null},"trend":{}},{"name":"Vian Perez","team":"Team Philip","cur":{"sets":0,"appts":0,"show":0,"noShow":0,"calls90":0,"bookingRate":null,"showRate":null,"closeRate":null,"revenue":0,"ibPct":null,"obPct":null},"trend":{}},{"name":"Richard Ian Alvarez","team":"Team Philip","cur":{"sets":0,"appts":0,"show":0,"noShow":0,"calls90":0,"bookingRate":null,"showRate":null,"closeRate":null,"revenue":0,"ibPct":null,"obPct":null},"trend":{}},{"name":"Rafael John Abayan","team":"Team Philip","cur":{"sets":0,"appts":0,"show":0,"noShow":0,"calls90":0,"bookingRate":null,"showRate":null,"closeRate":null,"revenue":0,"ibPct":null,"obPct":null},"trend":{}},{"name":"Phoebe Estel Ymil Collado","team":"Team Philip","cur":{"sets":0,"appts":0,"show":0,"noShow":0,"calls90":0,"bookingRate":null,"showRate":null,"closeRate":null,"revenue":0,"ibPct":null,"obPct":null},"trend":{}},{"name":"Makkie Mendez","team":"Team Philip","cur":{"sets":0,"appts":0,"show":0,"noShow":0,"calls90":0,"bookingRate":null,"showRate":null,"closeRate":null,"revenue":0,"ibPct":null,"obPct":null},"trend":{}},{"name":"Kenneth Mhar Garcia Libron","team":"Team Philip","cur":{"sets":0,"appts":0,"show":0,"noShow":0,"calls90":0,"bookingRate":null,"showRate":null,"closeRate":null,"revenue":0,"ibPct":null,"obPct":null},"trend":{}},{"name":"Julius Vizcayno","team":"Team Philip","cur":{"sets":0,"appts":0,"show":0,"noShow":0,"calls90":0,"bookingRate":null,"showRate":null,"closeRate":null,"revenue":0,"ibPct":null,"obPct":null},"trend":{}},{"name":"Jhaziel Gonzales","team":"Team Philip","cur":{"sets":0,"appts":0,"show":0,"noShow":0,"calls90":0,"bookingRate":null,"showRate":null,"closeRate":null,"revenue":0,"ibPct":null,"obPct":null},"trend":{}},{"name":"Heinrich Abarquez","team":"Team Philip","cur":{"sets":0,"appts":0,"show":0,"noShow":0,"calls90":0,"bookingRate":null,"showRate":null,"closeRate":null,"revenue":0,"ibPct":null,"obPct":null},"trend":{}},{"name":"Edelson Libunao","team":"Team Philip","cur":{"sets":0,"appts":0,"show":0,"noShow":0,"calls90":0,"bookingRate":null,"showRate":null,"closeRate":null,"revenue":0,"ibPct":null,"obPct":null},"trend":{}},{"name":"Dan Emmanuel Nicolas","team":"Team Philip","cur":{"sets":0,"appts":2,"show":1,"noShow":1,"calls90":0,"bookingRate":null,"showRate":50,"closeRate":0,"revenue":0,"ibPct":null,"obPct":null},"trend":{}}]}</script>
+<script>
+/* ============================================================
+   Data loading â€” reads data/scorecard.json (kept current by the
+   RefreshScorecard Apps Script). Falls back to the embedded copy
+   so the page still renders if the fetch is blocked.
+   ============================================================ */
+let DATA = null;
+const P_LABELS = {daily:'Daily', weekly:'Weekly', monthly:'Monthly'};
+
+const METRICS = {
+  bookingRate:{label:'Booking Rate', short:'Book %', fmt:'pct', target:40, kind:'rate', cur:'bookingRate', better:'up'},
+  sets:{label:'Sets', short:'Sets', fmt:'int', kind:'count', cur:'sets', better:'up'},
+  shows:{label:'Shows', short:'Shows', fmt:'int', kind:'count', cur:'show', better:'up'},
+  appts:{label:'Appointments', short:'Appts', fmt:'int', kind:'count', cur:'appts', better:'up'},
+  revenue:{label:'Upfront Revenue', short:'Revenue', fmt:'usd', kind:'count', cur:'revenue', better:'up'},
+  calls90:{label:'90-sec Calls', short:'90s Calls', fmt:'int', kind:'count', cur:'calls90', better:'up'},
+};
+/* which trend metrics each scope can show */
+const AGENT_METRICS = ['bookingRate','sets','shows'];
+const SECTION_METRICS = ['bookingRate','sets','shows','appts','revenue','calls90'];
+
+const state = { team:'all', agent:'', period:'monthly', metric:'bookingRate' };
+const TARGET = 40;
+
+/* ---------- formatting ---------- */
+const fmtN = v => v==null ? 'â€”' : Math.round(v).toLocaleString('en-US');
+const fmtPct = v => v==null ? 'â€”' : v.toFixed(1)+'%';
+const fmtUsd = v => v==null ? 'â€”' : '$'+Math.round(v).toLocaleString('en-US');
+function fmtBy(kindOrMetric, v){
+  const m = METRICS[kindOrMetric];
+  const f = m ? m.fmt : kindOrMetric;
+  if(f==='pct') return fmtPct(v);
+  if(f==='usd') return fmtUsd(v);
+  return fmtN(v);
+}
+const rateColor = r => r==null ? 'var(--muted)' : r>=TARGET ? 'var(--pos)' : 'var(--orange)';
+
+/* ---------- scope helpers ---------- */
+function teams(){ return [...new Set(DATA.agents.map(a=>a.team))]; }
+function scopedAgents(){
+  return DATA.agents.filter(a=> state.team==='all' || a.team===state.team);
+}
+function activeAgents(list){ return list.filter(a=> (a.cur.calls90||0)>0 || (a.cur.sets||0)>0); }
+
+function agg(list){
+  const t={sets:0,appts:0,show:0,noShow:0,calls90:0,revenue:0,cw:0,cn:0,n:0};
+  list.forEach(a=>{const c=a.cur; t.sets+=c.sets||0; t.appts+=c.appts||0; t.show+=c.show||0;
+    t.noShow+=c.noShow||0; t.calls90+=c.calls90||0; t.revenue+=c.revenue||0;
+    if(c.closeRate!=null && (c.show||0)>0){ t.cw+=c.closeRate*(c.show); t.cn+=c.show; }
+    if((c.calls90||0)>0||(c.sets||0)>0) t.n++;});
+  t.bookingRate = t.calls90 ? t.sets/t.calls90*100 : null;
+  t.showRate = t.appts ? t.show/t.appts*100 : null;
+  t.closeRate = t.cn ? t.cw/t.cn : null;
+  return t;
+}
+/* the current-scope "standing": an agent's MTD card, or the aggregate */
+function scopeStat(){
+  if(state.agent){ const a = byName(state.agent); return {...a.cur, n:1, _agent:a}; }
+  return agg(scopedAgents());
+}
+function byName(n){ return DATA.agents.find(a=>a.name===n); }
+
+/* ---------- trend series for the chart ---------- */
+function seriesFor(metricKey, period){
+  const m = METRICS[metricKey];
+  if(state.agent){
+    const a = byName(state.agent);
+    const t = a.trend && a.trend[metricKey];
+    return t ? t[period] : null;
+  }
+  if(state.team==='all') return sectionSeries('ASRs', metricKey, period);
+  if(DATA.sections[state.team]) return sectionSeries(state.team, metricKey, period);
+  /* team without an Executive-Summary block: aggregate agent trends (sets/shows only) */
+  if(metricKey==='sets' || metricKey==='shows'){
+    const labs = DATA.periods[period];
+    const out = labs.map(()=>0); let any=false;
+    scopedAgents().forEach(a=>{ const t=a.trend && a.trend[metricKey]; if(t&&t[period]){ any=true;
+      t[period].forEach((v,i)=>{ out[i]+= (v||0); }); }});
+    return any ? out : null;
+  }
+  return null;
+}
+function sectionSeries(key, metricKey, period){
+  const s = DATA.sections[key]; if(!s || !s[metricKey]) return null;
+  return s[metricKey][period];
+}
+/* companion volume series (90-sec calls) to shade behind a rate line */
+function volumeFor(period){
+  if(state.agent){ return null; }
+  if(state.team==='all') return sectionSeries('ASRs','calls90',period);
+  if(DATA.sections[state.team]) return sectionSeries(state.team,'calls90',period);
+  return null;
+}
+
+/* ---------- controls ---------- */
+function fillTeamSelect(){
+  const sel = document.getElementById('sel-team');
+  const opts = ['all', ...teams()];
+  sel.innerHTML = opts.map(t=>`<option value="${t}">${t==='all'?'All teams':t}</option>`).join('');
+  sel.value = state.team;
+}
+function fillAgentSelect(){
+  const sel = document.getElementById('sel-agent');
+  const list = activeAgents(scopedAgents()).slice().sort((a,b)=>(b.cur.sets||0)-(a.cur.sets||0));
+  let html = `<option value="">All agents (${state.team==='all'?'enterprise':'team'} view)</option>`;
+  if(state.team==='all'){
+    teams().forEach(tm=>{
+      const grp = list.filter(a=>a.team===tm);
+      if(!grp.length) return;
+      html += `<optgroup label="${tm}">`+grp.map(a=>`<option value="${esc(a.name)}">${a.name} Â· ${a.cur.sets} sets</option>`).join('')+`</optgroup>`;
+    });
+  } else {
+    html += list.map(a=>`<option value="${esc(a.name)}">${a.name} Â· ${a.cur.sets} sets</option>`).join('');
+  }
+  sel.innerHTML = html;
+  sel.value = state.agent;
+}
+function fillMetricSeg(){
+  const seg = document.getElementById('seg-metric');
+  const allow = state.agent ? AGENT_METRICS : SECTION_METRICS;
+  seg.innerHTML = Object.keys(METRICS).map(k=>{
+    const on = allow.includes(k);
+    return `<button data-v="${k}" ${on?'':'disabled'} aria-pressed="${state.metric===k}">${METRICS[k].short}</button>`;
+  }).join('');
+  if(!allow.includes(state.metric)){ state.metric = allow[0]; }
+  seg.querySelectorAll('button').forEach(b=> b.setAttribute('aria-pressed', String(b.dataset.v===state.metric)));
+  seg.querySelectorAll('button').forEach(b=> b.onclick = ()=>{ if(b.disabled) return;
+    state.metric=b.dataset.v; renderTrend();
+    seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b))); });
+}
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+
+/* ---------- hero + kpis ---------- */
+function renderHero(){
+  const t = scopeStat();
+  const scope = state.agent ? state.agent : (state.team==='all' ? 'Enterprise Â· all teams' : state.team);
+  document.getElementById('scope-label').textContent = (state.agent? (byName(state.agent).team+' Â· month-to-date') : 'Month-to-date Â· Aug');
+  document.getElementById('hero-rate').textContent = fmtPct(t.bookingRate);
+  document.getElementById('hero-rate').style.color = rateColor(t.bookingRate);
+  const who = state.agent ? state.agent : (state.team==='all'?'the whole ASR team':state.team);
+  document.getElementById('hero-detail').innerHTML =
+    `Booking rate for <b style="color:var(--ink-2)">${esc(who)}</b> â€” ${fmtN(t.sets)} sets from ${fmtN(t.calls90)} 90-sec calls`
+    + (state.agent?'':` Â· ${t.n} active agent${t.n===1?'':'s'}`);
+  const chip = document.getElementById('hero-gap');
+  if(t.bookingRate==null){ chip.textContent=''; chip.style.background='transparent'; }
+  else{ const d=t.bookingRate-TARGET;
+    chip.textContent=(d>=0?'+':'')+d.toFixed(1)+' PTS VS 40% TARGET';
+    chip.style.background = d>=0?'var(--pos-soft)':'var(--orange-soft)';
+    chip.style.color = d>=0?'var(--pos)':'var(--orange-dk)'; }
+  const a = Math.max(0,Math.min(100, t.bookingRate||0));
+  document.getElementById('gauge-fill').style.width=a+'%';
+  const g=document.getElementById('gauge-gap'); g.style.left=a+'%'; g.style.width=Math.max(0,TARGET-a)+'%';
+
+  const kpis = [
+    ['Sets', fmtN(t.sets), 'bookings MTD'],
+    ['Appointments', fmtN(t.appts), 'scheduled, net cancels'],
+    ['Shows', fmtN(t.show), fmtPct(t.showRate)+' show rate'],
+    ['Close Rate', fmtPct(t.closeRate), 'closed Ã· shows'],
+    ['Upfront Revenue', fmtUsd(t.revenue), 'month-to-date'],
+    ['90-sec Calls', fmtN(t.calls90), 'setter connects'],
+  ];
+  document.getElementById('kpis').innerHTML = kpis.map(k=>
+    `<div class="kpi"><div class="kpi-label">${k[0]}</div><div class="kpi-val">${k[1]}</div><div class="kpi-note">${k[2]}</div></div>`).join('');
+}
+
+/* ---------- main trend chart ---------- */
+function renderTrend(){
+  fillMetricSeg();
+  const m = METRICS[state.metric], period=state.period;
+  const labels = DATA.periods[period];
+  const ser = seriesFor(state.metric, period);
+  const who = state.agent ? state.agent : (state.team==='all'?'Enterprise':state.team);
+  document.getElementById('trend-title').textContent = `${P_LABELS[period]} ${m.label.toLowerCase()}`;
+  const leg = document.getElementById('trend-legend');
+
+  if(!ser){
+    document.getElementById('trend').innerHTML =
+      `<div class="empty">No ${m.label.toLowerCase()} trend is tracked for ${esc(who)}.</div>`;
+    document.getElementById('trend-sub').textContent = '';
+    leg.innerHTML=''; return;
+  }
+  document.getElementById('trend-sub').textContent =
+    `${esc(who)} Â· ${m.label} across ${labels.length} ${period==='monthly'?'months':period==='weekly'?'weeks':'days'}.`;
+
+  const W=460,H=190,PL=38,PR=12,PT=14,PB=32, iw=W-PL-PR, ih=H-PT-PB;
+  const x = i => PL + (iw/labels.length)*(i+.5);
+  const vals = ser.map(v=> v==null?null:v);
+  let svg='';
+
+  if(m.kind==='rate'){
+    const vol = volumeFor(period);
+    const maxRate = Math.max(80, ...vals.filter(v=>v!=null));
+    const y = r => PT + ih - (Math.min(r,maxRate)/maxRate)*ih;
+    /* volume bars behind */
+    if(vol){ const maxV=Math.max(...vol,1); const bw=Math.max(6, iw/labels.length*0.5);
+      vol.forEach((v,i)=>{ const bh=(v/maxV)*ih*0.9; svg+=`<rect x="${x(i)-bw/2}" y="${PT+ih-bh}" width="${bw}" height="${bh}" fill="var(--surface-2)" stroke="var(--line-2)" stroke-width=".8"><title>${labels[i]}: ${fmtN(v)} 90-sec calls</title></rect>`; }); }
+    /* gridlines + target */
+    [0,20,40,60,80].forEach(v=>{ if(v>maxRate) return; const isT=v===TARGET;
+      svg+=`<line x1="${PL}" x2="${W-PR}" y1="${y(v)}" y2="${y(v)}" stroke="${isT?'var(--rule)':'var(--line)'}" stroke-width="${isT?1.4:1}" ${isT?'stroke-dasharray="4 3" opacity=".85"':''}/>`;
+      svg+=`<text x="${PL-6}" y="${y(v)+3}" text-anchor="end" font-size="9" font-family="var(--mono)" fill="${isT?'var(--ink-2)':'var(--muted)'}">${v}%</text>`; });
+    let line='',dots='';
+    vals.forEach((v,i)=>{ if(v==null) return; line+=(line?' L':'M')+x(i)+' '+y(v);
+      dots+=`<circle cx="${x(i)}" cy="${y(v)}" r="3.4" fill="${rateColor(v)}" stroke="var(--surface)" stroke-width="1.4"><title>${labels[i]}: ${fmtPct(v)}</title></circle>`; });
+    svg+=`<path d="${line}" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>${dots}`;
+    leg.innerHTML=`<span><i style="background:var(--orange)"></i>Booking rate</span><span><i style="background:var(--rule);height:2px"></i>Target 40%</span>`+(vol?`<span><i style="background:var(--surface-2);border:1px solid var(--line-2)"></i>90-sec calls</span>`:'');
+  } else {
+    const maxV = Math.max(1, ...vals.filter(v=>v!=null));
+    const y = v => PT + ih - (v/maxV)*ih*0.94;
+    [0,.5,1].forEach(f=>{ const v=maxV*f; svg+=`<line x1="${PL}" x2="${W-PR}" y1="${PT+ih-ih*0.94*f}" y2="${PT+ih-ih*0.94*f}" stroke="var(--line)" stroke-width="1"/>`;
+      svg+=`<text x="${PL-6}" y="${PT+ih-ih*0.94*f+3}" text-anchor="end" font-size="9" font-family="var(--mono)" fill="var(--muted)">${m.fmt==='usd'?'$'+fmtShort(v):fmtShort(v)}</text>`; });
+    const bw=Math.max(7, iw/labels.length*0.6);
+    vals.forEach((v,i)=>{ if(v==null) return; const bh=(v/maxV)*ih*0.94;
+      svg+=`<rect x="${x(i)-bw/2}" y="${PT+ih-bh}" width="${bw}" height="${bh}" fill="var(--orange)" opacity=".85"><title>${labels[i]}: ${fmtBy(state.metric,v)}</title></rect>`; });
+    leg.innerHTML=`<span><i style="background:var(--orange);opacity:.85"></i>${m.label}</span>`;
+  }
+  /* x ticks */
+  labels.forEach((l,i)=>{ svg+=`<text x="${x(i)}" y="${H-11}" text-anchor="middle" font-size="9" font-family="var(--mono)" fill="var(--muted)">${l.replace('WB ','')}</text>`; });
+
+  document.getElementById('trend').innerHTML =
+    `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" role="img" aria-label="${P_LABELS[period]} ${m.label}">${svg}</svg>`;
+}
+const fmtShort = v => v>=1000 ? (v/1000).toFixed(v>=10000?0:1)+'k' : Math.round(v);
+
+/* ---------- teams comparison ---------- */
+function renderTeams(){
+  const rows = teams().map(name=>({name, t:agg(DATA.agents.filter(a=>a.team===name))}))
+    .sort((a,b)=>(b.t.bookingRate??-1)-(a.t.bookingRate??-1));
+  document.getElementById('teams').innerHTML = rows.map(r=>{
+    const t=r.t, sel=state.team===r.name, rate=t.bookingRate;
+    const a=Math.max(0,Math.min(100,rate||0));
+    const note = rate==null?'no calls':(rate-TARGET>=0?'+':'')+(rate-TARGET).toFixed(1)+' pts';
+    return `<div class="team" role="button" tabindex="0" data-team="${esc(r.name)}" aria-selected="${sel}">
+      <div class="team-name">${r.name}<span>${t.n} active Â· ${fmtN(t.sets)} sets</span></div>
+      <div class="num mono" style="font-size:11.5px;color:var(--muted);text-align:right">${fmtN(t.calls90)}</div>
+      <div class="bar-track"><div class="bar-achieved" style="width:${a}%"></div>
+        <div class="bar-gap" style="left:${a}%;width:${Math.max(0,TARGET-a)}%"></div>
+        <div class="bar-target" style="left:${TARGET}%"></div></div>
+      <div><div class="team-rate" style="color:${rateColor(rate)}">${fmtPct(rate)}</div>
+        <div class="team-delta">${note}</div></div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.team').forEach(el=>{
+    const go=()=>{ state.team = state.team===el.dataset.team?'all':el.dataset.team; state.agent=''; syncControls(); renderAll(); };
+    el.addEventListener('click',go);
+    el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();go();} });
+  });
+}
+
+/* ---------- detail: leaderboard OR agent scorecard ---------- */
+const sortState = {k:'sets', dir:'desc'};
+function renderDetail(){
+  const body = document.getElementById('detail-body');
+  if(state.agent){ renderScorecard(body); return; }
+  renderLeaderboard(body);
+}
+
+function renderLeaderboard(body){
+  document.getElementById('detail-title').textContent = (state.team==='all'?'Agent leaderboard':state.team+' â€” agents');
+  let list = activeAgents(scopedAgents());
+  document.getElementById('detail-sub').textContent =
+    `${list.length} active agents Â· month-to-date Â· click a name to open their scorecard Â· click a header to sort`;
+  const k=sortState.k, dir=sortState.dir==='asc'?1:-1;
+  const get = (a)=> k==='name'?a.name:(a.cur[k]);
+  list = list.slice().sort((a,b)=>{ let va=get(a),vb=get(b);
+    if(k==='name') return dir*String(va).localeCompare(String(vb));
+    if(va==null) return 1; if(vb==null) return -1; return dir*(va-vb); });
+  const cols = [['sets','Sets'],['appts','Appts'],['show','Shows'],['showRate','Show %'],['bookingRate','Book %'],['closeRate','Close %'],['revenue','Revenue']];
+  const head = `<tr><th data-k="rank" style="cursor:default">#</th>
+    <th data-k="name" tabindex="0">Agent</th>
+    ${cols.map(c=>`<th data-k="${c[0]}" tabindex="0"${c[0]===k?` data-dir="${sortState.dir}"`:''}>${c[1]}</th>`).join('')}
+    <th data-k="spark" style="cursor:default">${P_LABELS[state.period]} sets</th></tr>`;
+  const rows = list.map((a,i)=>{
+    const c=a.cur;
+    return `<tr data-agent="${esc(a.name)}">
+      <td>${i+1}</td>
+      <td><div class="agent-cell"><b>${a.name}</b><span>${a.team}</span></div></td>
+      <td>${fmtN(c.sets)}</td><td>${fmtN(c.appts)}</td><td>${fmtN(c.show)}</td>
+      <td style="color:var(--muted)">${fmtPct(c.showRate)}</td>
+      <td style="color:${rateColor(c.bookingRate)};font-weight:500">${fmtPct(c.bookingRate)}</td>
+      <td style="color:var(--muted)">${fmtPct(c.closeRate)}</td>
+      <td>${fmtUsd(c.revenue)}</td>
+      <td>${sparkFor(a,'sets')}</td></tr>`;
+  }).join('');
+  body.innerHTML = list.length
+    ? `<div class="tablewrap"><table><thead>${head}</thead><tbody>${rows}</tbody></table></div>`
+    : `<div class="empty">No active agents in this team.</div>`;
+  body.querySelectorAll('th[data-k]').forEach(th=>{ const key=th.dataset.k;
+    if(key==='rank'||key==='spark') return;
+    const go=()=>{ if(sortState.k===key) sortState.dir=sortState.dir==='asc'?'desc':'asc';
+      else { sortState.k=key; sortState.dir = key==='name'?'asc':'desc'; } renderLeaderboard(body); };
+    th.addEventListener('click',go);
+    th.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();go();} }); });
+  body.querySelectorAll('tbody tr').forEach(tr=> tr.onclick=()=>{ state.agent=tr.dataset.agent; syncControls(); renderAll(); });
+}
+
+function renderScorecard(body){
+  const a = byName(state.agent), c=a.cur;
+  document.getElementById('detail-title').textContent = 'Agent scorecard';
+  document.getElementById('detail-sub').textContent = `${a.name} Â· ${a.team} Â· month-to-date standings with ${P_LABELS[state.period].toLowerCase()} trends`;
+  /* rank within team + enterprise by sets */
+  const teamList = activeAgents(DATA.agents.filter(x=>x.team===a.team)).sort((x,y)=>(y.cur.sets||0)-(x.cur.sets||0));
+  const entList = activeAgents(DATA.agents).sort((x,y)=>(y.cur.sets||0)-(x.cur.sets||0));
+  const tr = teamList.findIndex(x=>x.name===a.name)+1, er = entList.findIndex(x=>x.name===a.name)+1;
+  const tiles = [
+    ['Sets', fmtN(c.sets), 'bookings'],
+    ['Appointments', fmtN(c.appts), 'net cancels'],
+    ['Shows', fmtN(c.show), c.noShow!=null?fmtN(c.noShow)+' no-show':''],
+    ['Booking Rate', fmtPct(c.bookingRate), 'target 40%'],
+    ['Show Rate', fmtPct(c.showRate), 'show Ã· appt'],
+    ['Close Rate', fmtPct(c.closeRate), 'closed Ã· show'],
+    ['Upfront Revenue', fmtUsd(c.revenue), ''],
+    ['90-sec Calls', fmtN(c.calls90), 'connects'],
+    ['Inbound Book %', fmtPct(c.ibPct), ''],
+    ['Outbound Book %', fmtPct(c.obPct), ''],
+  ];
+  const tileHtml = tiles.map(t=>{
+    const isBook = t[0]==='Booking Rate';
+    const col = isBook ? rateColor(c.bookingRate) : 'var(--ink)';
+    return `<div class="tile"><div class="k">${t[0]}</div><div class="v" style="color:${col}">${t[1]}</div><div class="d">${t[2]}</div></div>`;
+  }).join('');
+  const trendKeys = AGENT_METRICS.filter(k=> a.trend && a.trend[k]);
+  const trendHtml = trendKeys.length ? trendKeys.map(k=> scTrend(a,k)).join('') :
+    `<div class="note">No per-period trend is tracked for this rep in the report matrices.</div>`;
+  body.innerHTML = `
+    <div class="sc-head">
+      <div class="sc-id"><h3>${a.name}</h3><div class="sub">${a.team}</div></div>
+      <div class="sc-rank">
+        <div><b>#${tr||'â€”'}</b> in ${a.team}</div>
+        <div>#${er||'â€”'} enterprise Â· by sets</div>
+      </div>
+    </div>
+    <div class="tiles">${tileHtml}</div>
+    <div class="sc-trends">${trendHtml}</div>`;
+}
+
+function scTrend(a,k){
+  const m=METRICS[k], period=state.period, labels=DATA.periods[period];
+  const ser=a.trend[k][period];
+  const vv=ser.filter(v=>v!=null);
+  const last=[...ser].reverse().find(v=>v!=null);
+  const stat = m.kind==='rate'? fmtPct(last) : fmtBy(k,last);
+  return `<div class="sc-trend">
+    <div class="th"><b>${m.label}</b><span>latest ${stat}</span></div>
+    ${bigSpark(ser,labels,m)}
+  </div>`;
+}
+/* a labelled sparkline for the scorecard trend tiles */
+function bigSpark(ser,labels,m){
+  const W=210,H=52,PL=4,PR=4,PT=6,PB=14,iw=W-PL-PR,ih=H-PT-PB;
+  const x=i=> labels.length===1?W/2:PL+(iw/(labels.length-1))*i;
+  const vals=ser.map(v=>v==null?null:v);
+  if(m.kind==='rate'){
+    const maxR=Math.max(80,...vals.filter(v=>v!=null));
+    const y=r=>PT+ih-(Math.min(r,maxR)/maxR)*ih;
+    let line='',dots='';
+    vals.forEach((v,i)=>{ if(v==null) return; line+=(line?' L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1);
+      dots+=`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="2" fill="${rateColor(v)}"/>`; });
+    return `<svg class="spark" viewBox="0 0 ${W} ${H}" width="100%" height="${H}" aria-hidden="true">
+      <line x1="${PL}" x2="${W-PR}" y1="${y(40)}" y2="${y(40)}" stroke="var(--rule)" stroke-dasharray="3 2" opacity=".4"/>
+      <path d="${line}" fill="none" stroke="var(--orange)" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/>${dots}
+      ${xtick(labels,x,H)}</svg>`;
+  }
+  const maxV=Math.max(1,...vals.filter(v=>v!=null));
+  const bw=Math.max(4, iw/labels.length*0.62);
+  let bars='';
+  vals.forEach((v,i)=>{ if(v==null) return; const bh=(v/maxV)*ih; bars+=`<rect x="${(x(i)-bw/2).toFixed(1)}" y="${(PT+ih-bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" fill="var(--orange)" opacity=".8"/>`; });
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" width="100%" height="${H}" aria-hidden="true">${bars}${xtick(labels,x,H)}</svg>`;
+}
+function xtick(labels,x,H){
+  return labels.map((l,i)=>{ if(labels.length>7 && i%2) return '';
+    return `<text x="${x(i).toFixed(1)}" y="${H-3}" text-anchor="middle" font-size="7.5" font-family="var(--mono)" fill="var(--muted)">${l.replace('WB ','').replace(/^0/,'')}</text>`; }).join('');
+}
+/* compact table sparkline */
+function sparkFor(a,k){
+  const t = a.trend && a.trend[k]; if(!t || !t[state.period]) return '<span class="note">â€”</span>';
+  const ser=t[state.period], W=84,H=18,vals=ser.map(v=>v==null?0:v),max=Math.max(1,...vals);
+  const bw=Math.max(2.4, W/ser.length*0.66);
+  let bars=''; ser.forEach((v,i)=>{ const x=(W/ser.length)*(i+.5), bh=((v||0)/max)*(H-3);
+    bars+=`<rect x="${(x-bw/2).toFixed(1)}" y="${(H-1-bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" fill="var(--ink-2)" opacity=".55"/>`; });
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true" style="margin-left:auto">${bars}</svg>`;
+}
+
+/* ---------- glue ---------- */
+function syncControls(){
+  fillTeamSelect(); fillAgentSelect(); fillMetricSeg();
+  document.getElementById('sel-team').value=state.team;
+  document.getElementById('sel-agent').value=state.agent;
+  document.querySelectorAll('#seg-period button').forEach(b=> b.setAttribute('aria-pressed',String(b.dataset.v===state.period)));
+}
+function renderAll(){ renderHero(); renderTrend(); renderTeams(); renderDetail(); }
+
+document.getElementById('sel-team').addEventListener('change',e=>{ state.team=e.target.value; state.agent=''; syncControls(); renderAll(); });
+document.getElementById('sel-agent').addEventListener('change',e=>{ state.agent=e.target.value; if(state.agent){ const a=byName(state.agent); if(a) state.team=a.team; } syncControls(); renderAll(); });
+document.querySelectorAll('#seg-period button').forEach(b=> b.addEventListener('click',()=>{
+  state.period=b.dataset.v;
+  document.querySelectorAll('#seg-period button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  renderTrend(); renderDetail(); }));
+
+/* ---------- boot ---------- */
+function boot(data){
+  DATA = data;
+  document.getElementById('m-asof').textContent = (DATA.meta&&DATA.meta.asOf)||'â€”';
+  document.getElementById('refresh-note').innerHTML =
+    `<b>Data &amp; refresh.</b> This view reads <code>data/scorecard.json</code>, regenerated from the ASR Closer Report by the `+
+    `<code>RefreshScorecard</code> Apps Script. Figures are current as of <b>${(DATA.meta&&DATA.meta.asOf)||'â€”'}</b>. `+
+    `A live browser-side read of the sheet requires it to be shared publicly; until then this snapshot is the source.`;
+  syncControls();
+  renderAll();
+}
+function readEmbedded(){
+  try{ const raw=document.getElementById('embedded-data').textContent.trim(); if(raw) return JSON.parse(raw); }catch(e){}
+  return null;
+}
+fetch('data/scorecard.json?v='+Date.now())
+  .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+  .then(boot)
+  .catch(err=>{
+    const emb = readEmbedded();
+    if(emb){ boot(emb); return; }
+    document.querySelector('.wrap').insertAdjacentHTML('afterbegin',
+      `<p style="padding:14px;font-family:var(--mono);font-size:13px;color:var(--orange)">Could not load data/scorecard.json (${err.message}). Serve this page over HTTP (the project's serve.pl) rather than opening the file directly.</p>`);
+  });
+</script>
